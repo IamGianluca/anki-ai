@@ -1,0 +1,17 @@
+# python cache and build
+__pycache__/
+*.egg-info/
+build/
+dist/
+
+# notebook cache
+.ipynb_checkpoints/
+
+# coverage files
+.coverage*
+
+# secrets
+.env
+
+# data
+data/
