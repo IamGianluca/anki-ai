@@ -1,0 +1,38 @@
+[project]
+name = "anki-ai"
+version = "0.0.1"
+description = "AI-powered Utilites for Anki"
+authors = [{name= "Gianluca Rossi" , email= "gr.gianlucarossi@gmail.com" }]
+requires-python = ">=3.10"
+license = {file = "LICENSE"}
+readme = "README.md"
+dependencies = [
+    "accelerate",
+    "transformers",
+    "torch",
+]
+
+[project.optional-dependencies]
+dev = [
+  "ruff",
+  "pytest",
+  "pytest-cov",
+  "ipdb",
+  "mypy",
+  "pynvim", # required for nvim lsp
+  "jupyterlab",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+norecursedirs = [
+  "*.egg-info",
+  ".*",
+  "build",
+  "dist",
+]
+
+[tool.ruff]
+extend-include = ["*.ipynb"]
+lint.extend-select = ["I"]
+lint.extend-ignore = ["E741"]
