@@ -8,19 +8,21 @@ license = {file = "LICENSE"}
 readme = "README.md"
 dependencies = [
     "accelerate",
-    "transformers",
+    "qdrant-client",
+    "sentence-transformers",
     "torch",
+    "transformers",
 ]
 
 [project.optional-dependencies]
 dev = [
-  "ruff",
-  "pytest",
-  "pytest-cov",
   "ipdb",
+  "jupyterlab",
   "mypy",
   "pynvim", # required for nvim lsp
-  "jupyterlab",
+  "pytest",
+  "pytest-cov",
+  "ruff",
 ]
 
 [tool.pytest.ini_options]
