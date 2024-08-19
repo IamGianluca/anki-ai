@@ -17,13 +17,15 @@ class Deck:
         self.name = name
         self._collection: List = []
 
+    def add(self, note: List[Note]) -> None:
+        self._collection.extend(note)
+
     def from_txt(self, fpath: Path, ignore_media: bool = True) -> None:
         with open(fpath) as f:
             for i, line in enumerate(f):
                 if ignore_media:
                     if "<img src=" in line:
                         continue
-
                 try:
                     front, back, _, _, _, tags = line.split("\t")
 
@@ -35,3 +37,9 @@ class Deck:
                     self._collection.append(Note(front=front, back=back, tags=tags))
                 except ValueError:
                     print(f"Was not able to process line {i}: {line}")
+
+    def __getitem__(self, slice) -> List[Note]:
+        return self._collection[slice]
+
+    def __len__(self) -> int:
+        return len(self._collection)
