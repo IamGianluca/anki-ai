@@ -20,6 +20,11 @@ def deck(note1, note2) -> Deck:
     return deck
 
 
+def test_note_repr(note1):
+    uuid, front, back, tags = note1.uuid, note1.front, note1.back, note1.tags
+    assert repr(note1) == f"Note(uuid={uuid}, front={front}, back={back}, tags={tags}"
+
+
 def test_retrieve_element_from_deck(note1, deck):
     # when
     result = deck[0]

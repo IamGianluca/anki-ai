@@ -1,15 +1,17 @@
 from pathlib import Path
 from typing import List, Optional
+from uuid import uuid4
 
 
 class Note:
     def __init__(self, front: str, back: str, tags: Optional[List[str]]) -> None:
+        self.uuid = uuid4()
         self.front = front
         self.back = back
         self.tags = tags
 
     def __repr__(self) -> str:
-        return f"Note(front={self.front}, back={self.back}, tags={self.tags}"
+        return f"Note(uuid={self.uuid}, front={self.front}, back={self.back}, tags={self.tags}"
 
 
 class Deck:
