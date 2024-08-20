@@ -21,8 +21,12 @@ def deck(note1, note2) -> Deck:
 
 
 def test_note_repr(note1):
+    # when
+    result = repr(note1)
+
+    # then
     uuid, front, back, tags = note1.uuid, note1.front, note1.back, note1.tags
-    assert repr(note1) == f"Note(uuid={uuid}, front={front}, back={back}, tags={tags}"
+    assert result == f"Note(uuid={uuid}, front={front}, back={back}, tags={tags}"
 
 
 def test_retrieve_element_from_deck(note1, deck):
@@ -47,3 +51,15 @@ def test_deck_length(deck):
 
     # then
     assert result == 2
+
+
+def test_deck_from_txt(deck):
+    # given
+    assert len(deck) == 2  # the deck fixture comes with two notes already
+
+    # when
+    fpath = "./data/Selected Notes.txt"
+    deck.from_txt(fpath)
+
+    # then
+    assert len(deck) >= 2

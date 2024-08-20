@@ -4,7 +4,7 @@ install:
 	uv pip install -e . 
 
 test:
-	pytest . --durations=5
+	pytest . --durations=5 --cov=src/anki_ai/
 
 check: format lint
 
