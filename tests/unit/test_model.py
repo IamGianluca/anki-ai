@@ -58,8 +58,38 @@ def test_deck_from_txt(deck):
     assert len(deck) == 2  # the deck fixture comes with two notes already
 
     # when
-    fpath = "./data/Selected Notes.txt"
+    fpath = "./tests/data/test_data.txt"
     deck.from_txt(fpath)
 
     # then
-    assert len(deck) >= 2
+    assert len(deck) == 10  # 2 existing + 8 in sample file
+
+
+def test_deck_from_txt_ignore_media(deck):
+    # given
+    assert len(deck) == 2  # the deck fixture comes with two notes already
+
+    # when
+    fpath = "./tests/data/test_data.txt"
+    deck.from_txt(fpath, ignore_media=False)
+
+    # then
+    assert len(deck) == 12  # 2 existing + 10 in sample file (2 include media content)
+
+
+def test_deck_load_from_txt_verbose(capsys, deck):
+    # when
+    fpath = "./tests/data/test_data.txt"
+    deck.from_txt(fpath, verbose=True)
+
+    captured = capsys.readouterr()
+    assert (
+        captured.out
+        == """Was not able to process line 0: #separator:tab
+
+Was not able to process line 1: #html:true
+
+Was not able to process line 2: #tags column:6
+
+"""
+    )
