@@ -37,7 +37,9 @@ cffi==1.17.0
 charset-normalizer==3.3.2
     # via requests
 comm==0.2.2
-    # via ipykernel
+    # via
+    #   ipykernel
+    #   ipywidgets
 coverage==7.6.1
     # via pytest-cov
 debugpy==1.8.5
@@ -100,6 +102,8 @@ idna==3.7
     #   requests
 iniconfig==2.0.0
     # via pytest
+inquirerpy==0.3.4
+    # via huggingface-hub
 ipdb==0.13.13
 ipykernel==6.29.5
     # via jupyterlab
@@ -107,6 +111,8 @@ ipython==8.26.0
     # via
     #   ipdb
     #   ipykernel
+    #   ipywidgets
+ipywidgets==8.1.3
 isoduration==20.11.0
     # via jsonschema
 jedi==0.19.1
@@ -162,6 +168,8 @@ jupyterlab-pygments==0.3.0
     # via nbconvert
 jupyterlab-server==2.27.3
     # via jupyterlab
+jupyterlab-widgets==3.0.11
+    # via ipywidgets
 markupsafe==2.1.5
     # via
     #   jinja2
@@ -252,6 +260,8 @@ parso==0.8.4
     # via jedi
 pexpect==4.9.0
     # via ipython
+pfzy==0.3.4
+    # via inquirerpy
 pillow==10.4.0
     # via sentence-transformers
 platformdirs==4.2.2
@@ -263,7 +273,9 @@ portalocker==2.10.1
 prometheus-client==0.20.0
     # via jupyter-server
 prompt-toolkit==3.0.47
-    # via ipython
+    # via
+    #   inquirerpy
+    #   ipython
 protobuf==5.27.3
     # via grpcio-tools
 psutil==6.0.0
@@ -397,6 +409,7 @@ traitlets==5.14.3
     #   comm
     #   ipykernel
     #   ipython
+    #   ipywidgets
     #   jupyter-client
     #   jupyter-core
     #   jupyter-events
@@ -436,3 +449,5 @@ webencodings==0.5.1
     #   tinycss2
 websocket-client==1.8.0
     # via jupyter-server
+widgetsnbextension==4.0.11
+    # via ipywidgets

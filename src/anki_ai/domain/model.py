@@ -22,7 +22,9 @@ class Deck:
     def add(self, note: List[Note]) -> None:
         self._collection.extend(note)
 
-    def from_txt(self, fpath: Path, ignore_media: bool = True) -> None:
+    def from_txt(
+        self, fpath: Path, ignore_media: bool = True, verbose: bool = False
+    ) -> None:
         with open(fpath) as f:
             for i, line in enumerate(f):
                 if ignore_media:
@@ -35,10 +37,10 @@ class Deck:
                     tags = tags.replace("\n", "")
                     tags = list(tags.split(" "))
 
-                    # print(f"FRONT #{i}: {tags} {front}\nBACK  #{i}: {back}\n")
                     self._collection.append(Note(front=front, back=back, tags=tags))
                 except ValueError:
-                    print(f"Was not able to process line {i}: {line}")
+                    if verbose:
+                        print(f"Was not able to process line {i}: {line}")
 
     def __getitem__(self, slice) -> List[Note]:
         return self._collection[slice]

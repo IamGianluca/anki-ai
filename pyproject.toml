@@ -7,16 +7,18 @@ requires-python = ">=3.10"
 license = {file = "LICENSE"}
 readme = "README.md"
 dependencies = [
-    "accelerate",
-    "qdrant-client",
-    "sentence-transformers",
-    "torch",
-    "transformers",
+  "accelerate",
+  "qdrant-client",
+  "sentence-transformers",
+  "torch",
+  "transformers",
 ]
 
 [project.optional-dependencies]
 dev = [
+  "huggingface_hub[cli]",
   "ipdb",
+  "ipywidgets",
   "jupyterlab",
   "mypy",
   "pynvim", # required for nvim lsp
