@@ -37,6 +37,10 @@ norecursedirs = [
 ]
 
 [tool.ruff]
+src = ["src"]
 extend-include = ["*.ipynb"]
 lint.extend-select = ["I"]
 lint.extend-ignore = ["E741"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["src"]
