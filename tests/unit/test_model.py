@@ -53,34 +53,34 @@ def test_deck_length(deck):
     assert result == 2
 
 
-def test_deck_from_txt(deck):
+def test_deck_read_txt(deck):
     # given
     assert len(deck) == 2  # the deck fixture comes with two notes already
 
     # when
     fpath = "./tests/data/test_data.txt"
-    deck.from_txt(fpath)
+    deck.read_txt(fpath)
 
     # then
     assert len(deck) == 10  # 2 existing + 8 in sample file
 
 
-def test_deck_from_txt_ignore_media(deck):
+def test_deck_read_txt_ignore_media(deck):
     # given
     assert len(deck) == 2  # the deck fixture comes with two notes already
 
     # when
     fpath = "./tests/data/test_data.txt"
-    deck.from_txt(fpath, ignore_media=False)
+    deck.read_txt(fpath, ignore_media=False)
 
     # then
     assert len(deck) == 12  # 2 existing + 10 in sample file (2 include media content)
 
 
-def test_deck_load_from_txt_verbose(capsys, deck):
+def test_deck_load_read_txt_verbose(capsys, deck):
     # when
     fpath = "./tests/data/test_data.txt"
-    deck.from_txt(fpath, verbose=True)
+    deck.read_txt(fpath, verbose=True)
 
     captured = capsys.readouterr()
     assert (
