@@ -15,7 +15,7 @@ class Note:
 
 
 class Deck:
-    def __init__(self, name: str) -> None:
+    def __init__(self, name: Optional[str] = "default") -> None:
         self.name = name
         self._collection: List = []
 

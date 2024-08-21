@@ -1,5 +1,4 @@
 import pytest
-
 from anki_ai.domain.model import Deck, Note
 
 
