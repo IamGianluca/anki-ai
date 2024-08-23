@@ -1,4 +1,5 @@
 import pytest
+from loguru import logger
 
 from anki_ai.domain.model import Deck, Note
 
@@ -77,19 +78,27 @@ def test_deck_read_txt_ignore_media(deck):
     assert len(deck) == 12  # 2 existing + 10 in sample file (2 include media content)
 
 
-def test_deck_load_read_txt_verbose(capsys, deck):
+@pytest.fixture
+def caplog(caplog):
+    handler_id = logger.add(caplog.handler, format="{message}")
+    yield caplog
+    logger.remove(handler_id)
+
+
+def test_deck_load_read_txt_verbose(caplog, deck):
     # when
     fpath = "./tests/data/test_data.txt"
-    deck.read_txt(fpath, verbose=True)
-
-    captured = capsys.readouterr()
+    deck.read_txt(fpath)
+    # import ipdb
+    #
+    # ipdb.set_trace()
     assert (
-        captured.out
-        == """Was not able to process line 0: #separator:tab
+        caplog.text
+        == """WARNING  anki_ai.domain.model:model.py:48 Was not able to process line 0: #separator:tab
 
-Was not able to process line 1: #html:true
+WARNING  anki_ai.domain.model:model.py:48 Was not able to process line 1: #html:true
 
-Was not able to process line 2: #tags column:6
+WARNING  anki_ai.domain.model:model.py:48 Was not able to process line 2: #tags column:6
 
 """
     )

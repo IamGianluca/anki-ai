@@ -170,6 +170,7 @@ jupyterlab-server==2.27.3
     # via jupyterlab
 jupyterlab-widgets==3.0.11
     # via ipywidgets
+loguru==0.7.2
 markupsafe==2.1.5
     # via
     #   jinja2

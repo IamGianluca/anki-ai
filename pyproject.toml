@@ -10,6 +10,7 @@ dependencies = [
   "accelerate",
   "qdrant-client",
   "sentence-transformers",
+  "loguru",
   "torch",
   "transformers",
 ]

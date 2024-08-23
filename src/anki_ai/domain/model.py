@@ -2,6 +2,8 @@ from pathlib import Path
 from typing import List, Optional
 from uuid import uuid4
 
+from loguru import logger
+
 
 class Note:
     def __init__(self, front: str, back: str, tags: Optional[List[str]]) -> None:
@@ -28,9 +30,7 @@ class Deck:
     def add(self, note: List[Note]) -> None:
         self._collection.extend(note)
 
-    def read_txt(
-        self, fpath: Path, ignore_media: bool = True, verbose: bool = False
-    ) -> None:
+    def read_txt(self, fpath: Path, ignore_media: bool = True) -> None:
         with open(fpath) as f:
             for i, line in enumerate(f):
                 if ignore_media:
@@ -45,5 +45,4 @@ class Deck:
 
                     self._collection.append(Note(front=front, back=back, tags=tags))
                 except ValueError:
-                    if verbose:
-                        print(f"Was not able to process line {i}: {line}")
+                    logger.warning(f"Was not able to process line {i}: {line}")
