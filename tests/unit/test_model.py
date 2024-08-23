@@ -21,6 +21,13 @@ def deck(note1, note2) -> Deck:
     return deck
 
 
+@pytest.fixture
+def caplog(caplog):
+    handler_id = logger.add(caplog.handler, format="{message}")
+    yield caplog
+    logger.remove(handler_id)
+
+
 def test_note_repr(note1):
     # when
     result = repr(note1)
@@ -78,14 +85,7 @@ def test_deck_read_txt_ignore_media(deck):
     assert len(deck) == 12  # 2 existing + 10 in sample file (2 include media content)
 
 
-@pytest.fixture
-def caplog(caplog):
-    handler_id = logger.add(caplog.handler, format="{message}")
-    yield caplog
-    logger.remove(handler_id)
-
-
-def test_deck_load_read_txt_verbose(caplog, deck):
+def test_deck_load_read_txt_logging(caplog, deck):
     # when
     fpath = "./tests/data/test_data.txt"
     deck.read_txt(fpath)
