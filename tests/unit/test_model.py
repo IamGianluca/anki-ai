@@ -89,9 +89,8 @@ def test_deck_load_read_txt_verbose(caplog, deck):
     # when
     fpath = "./tests/data/test_data.txt"
     deck.read_txt(fpath)
-    # import ipdb
-    #
-    # ipdb.set_trace()
+
+    # then
     assert (
         caplog.text
         == """WARNING  anki_ai.domain.model:model.py:48 Was not able to process line 0: #separator:tab
