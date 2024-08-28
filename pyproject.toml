@@ -7,35 +7,36 @@ requires-python = ">=3.10"
 license = {file = "LICENSE"}
 readme = "README.md"
 dependencies = [
-  "accelerate",
-  "qdrant-client",
-  "sentence-transformers",
-  "loguru",
-  "hqq",
-  "torch",
-  "transformers",
+    "accelerate",
+    "qdrant-client",
+    "sentence-transformers",
+    "loguru",
+    "hqq",
+    "vllm", 
+    "torch",
+    "transformers",
 ]
 
 [project.optional-dependencies]
 dev = [
-  "huggingface_hub[cli]",
-  "ipdb",
-  "ipywidgets",
-  "jupyterlab",
-  "mypy",
-  "pynvim", # required for nvim lsp
-  "pytest",
-  "pytest-cov",
-  "ruff",
+    "huggingface_hub[cli]",
+    "ipdb",
+    "ipywidgets",
+    "jupyterlab",
+    "mypy",
+    "pynvim", # required for nvim lsp
+    "pytest",
+    "pytest-cov",
+    "ruff",
 ]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 norecursedirs = [
-  "*.egg-info",
-  ".*",
-  "build",
-  "dist",
+    "*.egg-info",
+    ".*",
+    "build",
+    "dist",
 ]
 
 [tool.ruff]
