@@ -24,7 +24,6 @@ class Deck:
         self.html_ = None
         self.deck_ncols_ = 0
         self.tags_ncols_ = 0
-        self.ncols_ = 0
 
     def __getitem__(self, slice) -> List[Note]:
         return self._collection[slice]
@@ -86,4 +85,3 @@ class Deck:
             self.deck_ncols_ = int(n_cols)
         elif "tags" in col_type:
             self.tags_ncols_ = int(n_cols)
-        self.ncols_ += int(n_cols)
