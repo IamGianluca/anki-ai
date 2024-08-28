@@ -81,19 +81,22 @@ def test_deck_parse_file_header(fpath, sep, html, ncols):
     assert deck.tags_ncols_ == ncols
 
 
-def test_deck_read_txt(deck):
+@pytest.mark.parametrize(
+    argnames="ignore_media,result", argvalues=[(True, 10), (False, 12)]
+)
+def test_deck_read_txt_simple(deck, ignore_media, result):
     # given
     assert len(deck) == 2  # the deck fixture comes with two notes already
 
     # when
     fpath = "./tests/data/test_data.txt"
-    deck.read_txt(fpath)
+    deck.read_txt(fpath, ignore_media=ignore_media)
 
     # then
-    assert len(deck) == 10  # 2 existing + 8 in sample file
+    assert len(deck) == result  # 2 existing + 8 non-media sample + 2 media samples
 
 
-def test_deck_read_txt_all_fields(deck):
+def test_deck_read_txt_more_fields(deck):
     # given
     assert len(deck) == 2
 
@@ -103,18 +106,6 @@ def test_deck_read_txt_all_fields(deck):
 
     # then
     assert len(deck) == 10
-
-
-def test_deck_read_txt_ignore_media(deck):
-    # given
-    assert len(deck) == 2  # the deck fixture comes with two notes already
-
-    # when
-    fpath = "./tests/data/test_data.txt"
-    deck.read_txt(fpath, ignore_media=False)
-
-    # then
-    assert len(deck) == 12  # 2 existing + 10 in sample file (2 include media content)
 
 
 def test_deck_load_read_txt_logging(caplog, deck):
