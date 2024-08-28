@@ -4,17 +4,17 @@ from loguru import logger
 from anki_ai.domain.model import Deck, Note
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture
 def note1() -> Note:
     return Note(front="fake front", back="fake back", tags=["fake tag1"])
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture
 def note2() -> Note:
     return Note(front="fake front", back="fake back", tags=["fake tag2"])
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture
 def deck(note1, note2) -> Deck:
     deck = Deck("test")
     deck.add([note1, note2])
