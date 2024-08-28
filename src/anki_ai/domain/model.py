@@ -51,8 +51,6 @@ class Deck:
                         continue
 
                 try:
-                    # if self.deck_ncols_ > 0:
-                    #     _, _, _ = line.split(self.sep_)[: self.deck_ncols_]
                     front, back, _, _, _, tags = line.split(self.sep_)[
                         self.deck_ncols_ :
                     ]
@@ -66,21 +64,21 @@ class Deck:
                     logger.warning(f"Was not able to process line {i}: {line}")
 
     def _extract_separator(self, line) -> None:
-        _, sep = line[1:].split(":")
-        if sep == "tab\n":
+        _, sep = line.strip().split(":")
+        if sep == "tab":
             self.sep_ = "\t"
         else:
             raise ValueError(f"Only tab-separated files are supported. Found {sep}")
 
     def _extract_html(self, line) -> None:
-        _, html = line[1:].split(":")
-        if html == "true\n":
+        _, html = line.strip().split(":")
+        if html == "true":
             self.html_ = True
         else:
             self.html_ = False
 
     def _extract_ncols(self, line) -> None:
-        col_type, n_cols = line[1:].split(":")
+        col_type, n_cols = line.split(":")
         if "deck" in col_type:
             self.deck_ncols_ = int(n_cols)
         elif "tags" in col_type:
