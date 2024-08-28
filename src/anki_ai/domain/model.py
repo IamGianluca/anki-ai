@@ -38,12 +38,7 @@ class Deck:
         with open(fpath) as f:
             for i, line in enumerate(f):
                 if line.startswith("#"):
-                    if "separator" in line:
-                        self._extract_separator(line)
-                    if "html" in line:
-                        self._extract_html(line)
-                    if "column" in line:
-                        self._extract_ncols(line)
+                    self._parse_header(line)
                     continue
 
                 if ignore_media:
@@ -70,14 +65,22 @@ class Deck:
         else:
             raise ValueError(f"Only tab-separated files are supported. Found {sep}")
 
-    def _extract_html(self, line) -> None:
+    def _parse_header(self, line: str) -> None:
+        if "separator" in line:
+            self._extract_separator(line)
+        if "html" in line:
+            self._extract_html(line)
+        if "column" in line:
+            self._extract_ncols(line)
+
+    def _extract_html(self, line: str) -> None:
         _, html = line.strip().split(":")
         if html == "true":
             self.html_ = True
         else:
             self.html_ = False
 
-    def _extract_ncols(self, line) -> None:
+    def _extract_ncols(self, line: str) -> None:
         col_type, n_cols = line.split(":")
         if "deck" in col_type:
             self.deck_ncols_ = int(n_cols)
