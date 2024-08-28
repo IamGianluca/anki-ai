@@ -1,16 +1,27 @@
 from pathlib import Path
-from typing import List, Optional
+from typing import Any, List, Optional
 from uuid import uuid4
 
 from loguru import logger
 
 
 class Note:
-    def __init__(self, front: str, back: str, tags: Optional[List[str]]) -> None:
-        self.uuid = uuid4()
+    def __init__(
+        self,
+        front: str,
+        back: str,
+        tags: Optional[List[str]] = None,
+        uuid: Optional[str] = None,
+        note_type: Optional[str] = None,
+        deck_name: Optional[str] = None,
+    ) -> None:
+        self.uuid = uuid if uuid is not None else uuid4()
+        self.note_type = note_type
         self.front = front
         self.back = back
         self.tags = tags
+        self.note_type = note_type
+        self.deck_name = deck_name
 
     def __repr__(self) -> str:
         return f"Note(uuid={self.uuid}, front={self.front}, back={self.back}, tags={self.tags}"
@@ -39,24 +50,32 @@ class Deck:
             for i, line in enumerate(f):
                 if line.startswith("#"):
                     self._parse_header(line)
-                    continue
+                else:
+                    try:
+                        if ignore_media:
+                            if "<img src=" in line:
+                                continue
+                        attrs = self._process_line(line)
+                        self._collection.append(Note(**attrs))
+                    except ValueError as e:
+                        logger.warning(f"Error while processing line {i}: {e}")
 
-                if ignore_media:
-                    if "<img src=" in line:
-                        continue
+    def _process_line(self, line: str) -> dict[str, Any]:
+        attrs = dict()
+        if self.deck_ncols_ > 0:
+            uuid, note_type, deck_name = line.split(self.sep_)[: self.deck_ncols_]
+            attrs["uuid"] = uuid
+            attrs["note_type"] = note_type
+            attrs["deck_name"] = deck_name
+        front, back, _, _, _, tags = line.split(self.sep_)[self.deck_ncols_ :]
+        attrs["front"] = front
+        attrs["back"] = back
 
-                try:
-                    front, back, _, _, _, tags = line.split(self.sep_)[
-                        self.deck_ncols_ :
-                    ]
-
-                    # convert tags as a list of str
-                    tags = tags.replace("\n", "")
-                    tags = list(tags.split(" "))
-
-                    self._collection.append(Note(front=front, back=back, tags=tags))
-                except ValueError:
-                    logger.warning(f"Was not able to process line {i}: {line}")
+        # convert tags as a list of str
+        tags = tags.replace("\n", "")
+        tags = list(tags.split(" "))
+        attrs["tags"] = tags
+        return attrs
 
     def _extract_separator(self, line) -> None:
         _, sep = line.strip().split(":")

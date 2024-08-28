@@ -107,6 +107,17 @@ def test_deck_read_txt_more_fields(deck):
     # then
     assert len(deck) == 10
 
+    # when
+    first_note = deck[4]
+
+    # then
+    assert first_note.uuid == "Azd65{j+,q"
+    assert first_note.note_type == "KaTeX and Markdown Basic"
+    assert first_note.deck_name == "Default"
+    assert first_note.front == "Command to create a soft link"
+    assert first_note.back == "```bash $ ln -s <file_name> <link_name> ```"
+    assert first_note.tags == ["linux"]
+
 
 def test_deck_load_read_txt_logging(caplog, deck):
     # when
