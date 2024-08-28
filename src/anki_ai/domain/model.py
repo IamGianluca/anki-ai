@@ -20,6 +20,11 @@ class Deck:
     def __init__(self, name: Optional[str] = "default") -> None:
         self.name = name
         self._collection: List = []
+        self.sep_ = None
+        self.html_ = None
+        self.deck_ncols_ = 0
+        self.tags_ncols_ = 0
+        self.ncols_ = 0
 
     def __getitem__(self, slice) -> List[Note]:
         return self._collection[slice]
@@ -33,11 +38,25 @@ class Deck:
     def read_txt(self, fpath: Path, ignore_media: bool = True) -> None:
         with open(fpath) as f:
             for i, line in enumerate(f):
+                if line.startswith("#"):
+                    if "separator" in line:
+                        self._extract_separator(line)
+                    if "html" in line:
+                        self._extract_html(line)
+                    if "column" in line:
+                        self._extract_ncols(line)
+                    continue
+
                 if ignore_media:
                     if "<img src=" in line:
                         continue
+
                 try:
-                    front, back, _, _, _, tags = line.split("\t")
+                    # if self.deck_ncols_ > 0:
+                    #     _, _, _ = line.split(self.sep_)[: self.deck_ncols_]
+                    front, back, _, _, _, tags = line.split(self.sep_)[
+                        self.deck_ncols_ :
+                    ]
 
                     # convert tags as a list of str
                     tags = tags.replace("\n", "")
@@ -46,3 +65,25 @@ class Deck:
                     self._collection.append(Note(front=front, back=back, tags=tags))
                 except ValueError:
                     logger.warning(f"Was not able to process line {i}: {line}")
+
+    def _extract_separator(self, line) -> None:
+        _, sep = line[1:].split(":")
+        if sep == "tab\n":
+            self.sep_ = "\t"
+        else:
+            raise ValueError(f"Only tab-separated files are supported. Found {sep}")
+
+    def _extract_html(self, line) -> None:
+        _, html = line[1:].split(":")
+        if html == "true\n":
+            self.html_ = True
+        else:
+            self.html_ = False
+
+    def _extract_ncols(self, line) -> None:
+        col_type, n_cols = line[1:].split(":")
+        if "deck" in col_type:
+            self.deck_ncols_ = int(n_cols)
+        elif "tags" in col_type:
+            self.tags_ncols_ = int(n_cols)
+        self.ncols_ += int(n_cols)

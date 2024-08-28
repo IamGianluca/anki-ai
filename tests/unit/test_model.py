@@ -4,17 +4,17 @@ from loguru import logger
 from anki_ai.domain.model import Deck, Note
 
 
-@pytest.fixture
+@pytest.fixture(scope="function")
 def note1() -> Note:
     return Note(front="fake front", back="fake back", tags=["fake tag1"])
 
 
-@pytest.fixture
+@pytest.fixture(scope="function")
 def note2() -> Note:
     return Note(front="fake front", back="fake back", tags=["fake tag2"])
 
 
-@pytest.fixture
+@pytest.fixture(scope="function")
 def deck(note1, note2) -> Deck:
     deck = Deck("test")
     deck.add([note1, note2])
@@ -61,6 +61,26 @@ def test_deck_length(deck):
     assert result == 2
 
 
+@pytest.mark.parametrize(
+    "fpath,sep,html,ncols",
+    [
+        ("./tests/data/test_data.txt", "\t", True, 6),
+        ("./tests/data/test_data_incl_.txt", "\t", False, 6),
+    ],
+)
+def test_deck_parse_file_header(fpath, sep, html, ncols):
+    # given
+    deck = Deck("default")
+
+    # when
+    deck.read_txt(fpath)
+
+    # then
+    assert deck.sep_ == sep
+    assert deck.html_ == html
+    assert deck.tags_ncols_ == ncols
+
+
 def test_deck_read_txt(deck):
     # given
     assert len(deck) == 2  # the deck fixture comes with two notes already
@@ -71,6 +91,18 @@ def test_deck_read_txt(deck):
 
     # then
     assert len(deck) == 10  # 2 existing + 8 in sample file
+
+
+def test_deck_read_txt_all_fields(deck):
+    # given
+    assert len(deck) == 2
+
+    # when
+    fpath = "./tests/data/test_data_incl_.txt"
+    deck.read_txt(fpath)
+
+    # then
+    assert len(deck) == 10
 
 
 def test_deck_read_txt_ignore_media(deck):
@@ -91,13 +123,4 @@ def test_deck_load_read_txt_logging(caplog, deck):
     deck.read_txt(fpath)
 
     # then
-    assert (
-        caplog.text
-        == """WARNING  anki_ai.domain.model:model.py:48 Was not able to process line 0: #separator:tab
-
-WARNING  anki_ai.domain.model:model.py:48 Was not able to process line 1: #html:true
-
-WARNING  anki_ai.domain.model:model.py:48 Was not able to process line 2: #tags column:6
-
-"""
-    )
+    assert caplog.text == ""
