@@ -8,13 +8,14 @@ license = {file = "LICENSE"}
 readme = "README.md"
 dependencies = [
     "accelerate",
+    "hqq",
+    "loguru",
+    "openai", # required for vllm openai compatible server
     "qdrant-client",
     "sentence-transformers",
-    "loguru",
-    "hqq",
-    "vllm", 
     "torch",
     "transformers",
+    "vllm", 
 ]
 
 [project.optional-dependencies]
