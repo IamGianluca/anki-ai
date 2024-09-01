@@ -3,6 +3,9 @@ from loguru import logger
 
 from anki_ai.domain.model import Deck, Note
 
+SIMPLE_FILE_FPATH = "./tests/data/test_data.txt"
+COMPLEX_FILE_FPATH = "./tests/data/test_data_incl_.txt"
+
 
 @pytest.fixture
 def note1() -> Note:
@@ -62,26 +65,6 @@ def test_deck_length(deck):
 
 
 @pytest.mark.parametrize(
-    "fpath,sep,html,ncols",
-    [
-        ("./tests/data/test_data.txt", "\t", True, 6),
-        ("./tests/data/test_data_incl_.txt", "\t", False, 6),
-    ],
-)
-def test_deck_parse_file_header(fpath, sep, html, ncols):
-    # given
-    deck = Deck("default")
-
-    # when
-    deck.read_txt(fpath)
-
-    # then
-    assert deck.sep_ == sep
-    assert deck.html_ == html
-    assert deck.tags_ncols_ == ncols
-
-
-@pytest.mark.parametrize(
     argnames="ignore_media,result", argvalues=[(True, 10), (False, 12)]
 )
 def test_deck_read_txt_simple(deck, ignore_media, result):
@@ -89,8 +72,7 @@ def test_deck_read_txt_simple(deck, ignore_media, result):
     assert len(deck) == 2  # the deck fixture comes with two notes already
 
     # when
-    fpath = "./tests/data/test_data.txt"
-    deck.read_txt(fpath, ignore_media=ignore_media)
+    deck.read_txt(SIMPLE_FILE_FPATH, ignore_media=ignore_media)
 
     # then
     assert len(deck) == result  # 2 existing + 8 non-media sample + 2 media samples
@@ -101,28 +83,26 @@ def test_deck_read_txt_more_fields(deck):
     assert len(deck) == 2
 
     # when
-    fpath = "./tests/data/test_data_incl_.txt"
-    deck.read_txt(fpath)
+    deck.read_txt(COMPLEX_FILE_FPATH)
 
     # then
     assert len(deck) == 10
 
     # when
-    first_note = deck[4]
+    result = deck[4]
 
     # then
-    assert first_note.uuid == "Azd65{j+,q"
-    assert first_note.note_type == "KaTeX and Markdown Basic"
-    assert first_note.deck_name == "Default"
-    assert first_note.front == "Command to create a soft link"
-    assert first_note.back == "```bash $ ln -s <file_name> <link_name> ```"
-    assert first_note.tags == ["linux"]
+    assert result.uuid == "Azd65{j+,q"
+    assert result.note_type == "KaTeX and Markdown Basic"
+    assert result.deck_name == "Default"
+    assert result.front == "Command to create a soft link"
+    assert result.back == "```bash $ ln -s <file_name> <link_name> ```"
+    assert result.tags == ["linux"]
 
 
-def test_deck_load_read_txt_logging(caplog, deck):
+def test_deck_read_txt_logging(caplog, deck):
     # when
-    fpath = "./tests/data/test_data.txt"
-    deck.read_txt(fpath)
+    deck.read_txt(SIMPLE_FILE_FPATH)
 
     # then
     assert caplog.text == ""
