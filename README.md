@@ -4,12 +4,12 @@ The goal of this tool is to ease the usage of Anki, particularly the creation of
 
 Some of the features `anki-ai` offers:
 
-- [ ] Edit existing notes to be more concise and improve formatting
+- [ ] Edit existing notes to be more concise and improve and standardize formatting
 - [ ] Identify duplicate notes using semantic search
 - [ ] Suggest when a note should be split into multiple atomic notes
 - [ ] Create new notes from a text file or pdf
 - [ ] Identify missing tags
-- [ ] Fact-check notes, to ensure there are no mistakes
+- [ ] Fact-check notes, to ensure there are no factual mistakes
 - [ ] Suggest how existing notes could be improved, e.g., decompose a note into multiple atomic notes, creating reverse cards, adding mnemonic, etc.
 
 # Installation
