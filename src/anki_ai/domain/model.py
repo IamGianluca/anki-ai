@@ -14,10 +14,6 @@ class Note(BaseModel):
     deck_name: Optional[str] = None
 
 
-# def __repr__(self) -> str:
-#     return f"Note(uuid={self.uuid}, front={self.front}, back={self.back}, tags={self.tags}"
-
-
 class Deck:
     def __init__(self, name: Optional[str] = "default") -> None:
         self.name = name
