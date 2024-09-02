@@ -1,30 +1,21 @@
 from pathlib import Path
 from typing import Any, List, Optional
-from uuid import uuid4
 
 from loguru import logger
+from pydantic import BaseModel
 
 
-class Note:
-    def __init__(
-        self,
-        front: str,
-        back: str,
-        tags: Optional[List[str]] = None,
-        uuid: Optional[str] = None,
-        note_type: Optional[str] = None,
-        deck_name: Optional[str] = None,
-    ) -> None:
-        self.uuid = uuid if uuid is not None else uuid4()
-        self.note_type = note_type
-        self.front = front
-        self.back = back
-        self.tags = tags
-        self.note_type = note_type
-        self.deck_name = deck_name
+class Note(BaseModel):
+    front: str
+    back: str
+    tags: Optional[List[str]] = None
+    uuid: Optional[str] = None
+    note_type: Optional[str] = None
+    deck_name: Optional[str] = None
 
-    def __repr__(self) -> str:
-        return f"Note(uuid={self.uuid}, front={self.front}, back={self.back}, tags={self.tags}"
+
+# def __repr__(self) -> str:
+#     return f"Note(uuid={self.uuid}, front={self.front}, back={self.back}, tags={self.tags}"
 
 
 class Deck:

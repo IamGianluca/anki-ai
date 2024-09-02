@@ -37,7 +37,10 @@ def test_note_repr(note1):
 
     # then
     uuid, front, back, tags = note1.uuid, note1.front, note1.back, note1.tags
-    assert result == f"Note(uuid={uuid}, front={front}, back={back}, tags={tags}"
+    assert (
+        result
+        == f"Note(front='{front}', back='{back}', tags={tags}, uuid={uuid}, note_type=None, deck_name=None)"
+    )
 
 
 def test_retrieve_element_from_deck(note1, deck):
