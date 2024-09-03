@@ -12,6 +12,7 @@ dist/
 
 # secrets
 .env
+.envrc
 
 # data
 data/
