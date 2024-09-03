@@ -9,12 +9,22 @@ COMPLEX_FILE_FPATH = "./tests/data/test_data_incl_.txt"
 
 @pytest.fixture
 def note1() -> Note:
-    return Note(front="fake front", back="fake back", tags=["fake tag1"])
+    return Note(front="Front 1", back="Back 1", tags=["Tag 1"])
 
 
 @pytest.fixture
 def note2() -> Note:
-    return Note(front="fake front", back="fake back", tags=["fake tag2"])
+    return Note(front="Front 2", back="Back 2", tags=["Tag 2"])
+
+
+@pytest.fixture
+def note3() -> Note:
+    return Note(front="Front 3", back="Back 3", tags=["Tag 3"])
+
+
+@pytest.fixture
+def empty_deck():
+    return Deck("empty")
 
 
 @pytest.fixture
@@ -57,6 +67,80 @@ def test_retrieve_slice_from_deck(note1, note2, deck):
 
     # then
     assert result == [note1, note2]
+
+
+def test_add_single_note(empty_deck):
+    note = Note(front="Test Front", back="Test Back")
+    empty_deck.add([note])
+    assert len(empty_deck) == 1
+    assert empty_deck[0] == note
+
+
+def test_add_multiple_notes(empty_deck, note1, note2):
+    notes = [
+        note1,
+        note2,
+        note3,
+    ]
+    empty_deck.add(notes)
+    assert len(empty_deck) == 3
+    assert empty_deck[:] == notes
+
+
+def test_read_txt_with_invalid_separator(empty_deck, tmp_path):
+    invalid_file = tmp_path / "invalid_separator.txt"
+    invalid_file.write_text("#separator:comma\nfront,back,tags\n")
+
+    with pytest.raises(ValueError, match="Only tab-separated files are supported"):
+        empty_deck.read_txt(invalid_file)
+
+
+def test_read_txt_with_html_true(empty_deck, tmp_path):
+    # given
+    html_file = tmp_path / "html_true.txt"
+    html_file.write_text(
+        "#separator:tab\n#html:true\n<b>front</b>\t<i>back</i>\t\t\t\ttag1 tag2\n"
+    )
+
+    # when
+    empty_deck.read_txt(html_file)
+
+    # then
+    assert len(empty_deck) == 1
+    note = empty_deck[0]
+    assert note.front == "<b>front</b>"
+    assert note.back == "<i>back</i>"
+    assert note.tags == ["tag1", "tag2"]
+
+
+def test_read_txt_with_html_false(empty_deck, tmp_path):
+    # given
+    html_file = tmp_path / "html_false.txt"
+    html_file.write_text("#separator:tab\n#html:false\nfront\tback\t\t\t\ttag1 tag2\n")
+
+    # when
+    empty_deck.read_txt(html_file)
+
+    # then
+    assert len(empty_deck) == 1
+    note = empty_deck[0]
+    assert note.front == "front"
+    assert note.back == "back"
+    assert note.tags == ["tag1", "tag2"]
+
+
+def test_read_txt_with_deck_columns(empty_deck, tmp_path):
+    # given
+    deck_file = tmp_path / "deck_columns.txt"
+    deck_file.write_text(
+        "#separator:tab\n#deck columns:3\nuuid\tnote_type\tdeck_name\tfront\tback\ttags\n"
+    )
+
+    # when
+    empty_deck.read_txt(deck_file)
+
+    # then
+    assert empty_deck.deck_ncols_ == 3
 
 
 def test_deck_length(deck):
