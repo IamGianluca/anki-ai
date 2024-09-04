@@ -16,12 +16,12 @@ class Note(BaseModel):
 
 class Deck:
     def __init__(self, name: Optional[str] = "default") -> None:
-        self.name = name
+        self.name: str = name
         self._collection: List = []
-        self.sep_ = None
-        self.html_ = None
-        self.deck_ncols_ = 0
-        self.tags_ncols_ = 0
+        self.sep_: str = ""
+        self.html_: bool = True
+        self.deck_ncols_: int = 0
+        self.tags_ncols_: int = 0
 
     def __getitem__(self, slice) -> List[Note]:
         return self._collection[slice]
@@ -69,7 +69,9 @@ class Deck:
         if sep == "tab":
             self.sep_ = "\t"
         else:
-            raise ValueError(f"Only tab-separated files are supported. Found {sep}")
+            raise NotImplementedError(
+                f"Only tab-separated files are supported. Found {sep}"
+            )
 
     def _parse_header(self, line: str) -> None:
         if "separator" in line:

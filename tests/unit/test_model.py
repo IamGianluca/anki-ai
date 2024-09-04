@@ -91,8 +91,17 @@ def test_read_txt_with_invalid_separator(empty_deck, tmp_path):
     invalid_file = tmp_path / "invalid_separator.txt"
     invalid_file.write_text("#separator:comma\nfront,back,tags\n")
 
-    with pytest.raises(ValueError, match="Only tab-separated files are supported"):
+    with pytest.raises(
+        NotImplementedError, match="Only tab-separated files are supported"
+    ):
         empty_deck.read_txt(invalid_file)
+
+
+def test_deck_iterable(deck):
+    # when
+    result = [note for note in deck]
+
+    assert len(result) == 2
 
 
 def test_read_txt_with_html_true(empty_deck, tmp_path):
