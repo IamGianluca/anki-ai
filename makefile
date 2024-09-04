@@ -16,3 +16,6 @@ lint:
 
 jupyter:
 	jupyter lab --ip 0.0.0.0 --no-browser --allow-root --port 8888
+
+vllm:
+	vllm serve meta-llama/Meta-Llama-3.1-8B-Instruct --max_model_len 4096 --chat-template ./template_llama31.jinja
