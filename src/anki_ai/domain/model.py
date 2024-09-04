@@ -15,7 +15,7 @@ class Note(BaseModel):
 
 
 class Deck:
-    def __init__(self, name: Optional[str] = "default") -> None:
+    def __init__(self, name: str = "default") -> None:
         self.name: str = name
         self._collection: List = []
         self.sep_: str = ""
