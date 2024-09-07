@@ -15,4 +15,4 @@ dist/
 .envrc
 
 # data
-data/
+/data/

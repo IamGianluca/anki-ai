@@ -1,0 +1,13 @@
+#separator:tab
+#html:true
+#tags column:6
+"<img src=""paste-d0ff77498ff8dde85ba00ae8b7c4bb6032d8483d.jpg"">"	Headboard&nbsp;				english
+What command does create a soft link?	```bash<br>$ ln -s &lt;file_name&gt; &lt;link_name&gt;<br>```				linux
+In the `ln -s` command, what is the order of file name and link name?	```bash<br>$ ln -s &lt;file_name&gt; &lt;link_name&gt;<br>```				linux
+In the `zip` command, what is the option to specify the destination?	"```bash<br>$ unzip &lt;file&gt;<span style=""color: rgb(0, 0, 0);""> -d &lt;path&gt;<br>```<br><br></span><img src=""paste-92e15adfe1d216e9ba6f170e4033b292b7b15756.jpg"">"				linux
+What command does extract files from a zip archive?	```bash<br>$ unzip &lt;file&gt;<br>```				linux
+What is the command to list the content of a directory?	```bash<br>$ ls &lt;path&gt;<br>```				linux
+What norm does correspond to the Euclidean distance?	L2-norm				math
+What norm does correspond to the Manhattan distance?	L1-norm				math
+What is the formula to compute the&nbsp;L1-norm?	$\|\boldsymbol{x}\|_1 = \sum_{i=1}^n \left|x_i\right|$				math
+What is the formula to compute the&nbsp;L2-norm?	$ \|\boldsymbol{x}\|_2 = \sqrt{ \sum{x_i^2}} $				dl leech
