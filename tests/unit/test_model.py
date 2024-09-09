@@ -1,44 +1,14 @@
 import pytest
-from loguru import logger
 
-from anki_ai.domain.model import Deck, Note
+from anki_ai.domain.model import Note
 
 SIMPLE_FILE_FPATH = "./tests/data/test_data.txt"
 COMPLEX_FILE_FPATH = "./tests/data/test_data_incl_.txt"
 
 
-@pytest.fixture
-def note1() -> Note:
-    return Note(front="Front 1", back="Back 1", tags=["Tag 1"])
-
-
-@pytest.fixture
-def note2() -> Note:
-    return Note(front="Front 2", back="Back 2", tags=["Tag 2"])
-
-
-@pytest.fixture
-def note3() -> Note:
-    return Note(front="Front 3", back="Back 3", tags=["Tag 3"])
-
-
-@pytest.fixture
-def empty_deck():
-    return Deck("empty")
-
-
-@pytest.fixture
-def deck(note1, note2) -> Deck:
-    deck = Deck("test")
-    deck.add([note1, note2])
-    return deck
-
-
-@pytest.fixture
-def caplog(caplog):
-    handler_id = logger.add(caplog.handler, format="{message}")
-    yield caplog
-    logger.remove(handler_id)
+def test_read_from_fake_file(empty_deck, simple_file):
+    empty_deck.read_txt(simple_file)
+    assert len(empty_deck) > 0
 
 
 def test_note_repr(note1):
@@ -76,7 +46,7 @@ def test_add_single_note(empty_deck):
     assert empty_deck[0] == note
 
 
-def test_add_multiple_notes(empty_deck, note1, note2):
+def test_add_multiple_notes(empty_deck, note1, note2, note3):
     notes = [
         note1,
         note2,

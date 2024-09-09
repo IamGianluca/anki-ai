@@ -75,7 +75,7 @@ Back: $ [ -0.01, + \infty ] $
 """
 
 
-class MLStripper(HTMLParser):
+class HTMLStripper(HTMLParser):
     def __init__(self):
         super().__init__()
         self.reset()
@@ -97,7 +97,7 @@ def replace_br_with_newline(html_string):
 
 
 def strip_tags(html):
-    s = MLStripper()
+    s = HTMLStripper()
     s.feed(replace_br_with_newline(html))
     return s.get_data()
 
