@@ -1,6 +1,6 @@
 from html.parser import HTMLParser
 from io import StringIO
-from typing import cast
+from typing import Any, Protocol, cast
 
 from openai import OpenAI
 
@@ -111,7 +111,17 @@ def get_vllm_client() -> OpenAI:
     )
 
 
-def format_note(note: Note, client: OpenAI) -> Note:
+class ChatCompletionProtocol(Protocol):
+    def create(self, *args: Any, **kwargs: Any) -> Any:
+        pass
+
+
+def get_chat_completion() -> ChatCompletionProtocol:
+    client = get_vllm_client()
+    return client.chat.completions
+
+
+def format_note(note: Note, chat: ChatCompletionProtocol) -> Note:
     user_msg = f"""Front: {strip_tags(note.front)}\nBack: {strip_tags(note.back)}"""
 
     messages = [
@@ -124,13 +134,12 @@ def format_note(note: Note, client: OpenAI) -> Note:
         "guided_whitespace_pattern": r"[\n\t ]*",
     }
 
-    chat_response = client.chat.completions.create(
+    chat_response = chat.create(
         model="meta-llama/Meta-Llama-3.1-8B-Instruct",
         messages=messages,  # type: ignore
         temperature=0,
         extra_body=extra_body,
     )
-
     json_data: str = cast(str, chat_response.choices[0].message.content)
     new_note = Note.model_validate_json(json_data)
     return new_note
