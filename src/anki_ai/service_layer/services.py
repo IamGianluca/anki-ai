@@ -1,11 +1,12 @@
 from html.parser import HTMLParser
 from io import StringIO
+from typing import cast
 
 from openai import OpenAI
 
 from anki_ai.domain.model import Note
 
-SYSTEM_MSG = """Optimize this Anki note:
+SYSTEM_MSG = r"""Optimize this Anki note:
 - Concise, simple, distinct
 - Follow format rules
 - Markdown syntax
@@ -82,8 +83,8 @@ class MLStripper(HTMLParser):
         self.convert_charrefs = True
         self.text = StringIO()
 
-    def handle_data(self, d):
-        self.text.write(d)
+    def handle_data(self, data):
+        self.text.write(data)
 
     def get_data(self):
         return self.text.getvalue()
@@ -125,11 +126,11 @@ def format_note(note: Note, client: OpenAI) -> Note:
 
     chat_response = client.chat.completions.create(
         model="meta-llama/Meta-Llama-3.1-8B-Instruct",
-        messages=messages,
+        messages=messages,  # type: ignore
         temperature=0,
         extra_body=extra_body,
     )
 
-    json_data: str = chat_response.choices[0].message.content
+    json_data: str = cast(str, chat_response.choices[0].message.content)
     new_note = Note.model_validate_json(json_data)
     return new_note
