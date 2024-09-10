@@ -111,17 +111,17 @@ def get_vllm_client() -> OpenAI:
     )
 
 
-class ChatCompletionProtocol(Protocol):
+class ChatCompletionService(Protocol):
     def create(self, *args: Any, **kwargs: Any) -> Any:
         pass
 
 
-def get_chat_completion() -> ChatCompletionProtocol:
+def get_chat_completion() -> ChatCompletionService:
     client = get_vllm_client()
     return client.chat.completions
 
 
-def format_note(note: Note, chat: ChatCompletionProtocol) -> Note:
+def format_note(note: Note, chat: ChatCompletionService) -> Note:
     user_msg = f"""Front: {strip_tags(note.front)}\nBack: {strip_tags(note.back)}"""
 
     messages = [
