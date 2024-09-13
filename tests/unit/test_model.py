@@ -172,3 +172,30 @@ def test_deck_read_txt_logging(caplog, deck):
 
     # then
     assert caplog.text == ""
+
+
+def test_deck_write_header(empty_deck, simple_file, tmp_path):
+    # given
+    empty_deck.read_txt(simple_file)
+
+    # when
+    fpath = tmp_path / "new.txt"
+    empty_deck.write_txt(fpath)
+
+    # then
+    expected = ""
+    with open(simple_file, "r") as f:
+        for line in f.readlines():
+            if line.startswith("#"):
+                expected += line
+            else:
+                break
+
+    result = ""
+    with open(fpath, "r") as f:
+        for line in f.readlines():
+            if line.startswith("#"):
+                result += line
+            else:
+                break
+    assert expected == result

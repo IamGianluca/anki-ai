@@ -94,3 +94,14 @@ class Deck:
             self.deck_ncols_ = int(n_cols)
         elif "tags" in col_type:
             self.tags_ncols_ = int(n_cols)
+
+    def write_txt(self, fpath) -> None:
+        with open(fpath, "w") as f:
+            f.write(f"#separator:{symbol2sep[self.sep_]}\n")
+            f.write(f"#html:{symbol2html[self.html_]}\n")
+
+
+sep2symbol = {"tab": "\t"}
+symbol2sep = {v: k for k, v in sep2symbol.items()}
+html2symbol = {"true": True, "false": False}
+symbol2html = {v: k for k, v in html2symbol.items()}
