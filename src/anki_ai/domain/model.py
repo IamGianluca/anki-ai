@@ -99,6 +99,9 @@ class Deck:
         with open(fpath, "w") as f:
             f.write(f"#separator:{symbol2sep[self.sep_]}\n")
             f.write(f"#html:{symbol2html[self.html_]}\n")
+            for note in self:
+                tags = " ".join(note.tags)
+                f.write(f"{note.front}\t{note.back}\t\t\t\t{tags}\n")
 
 
 sep2symbol = {"tab": "\t"}

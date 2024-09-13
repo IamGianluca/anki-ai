@@ -1,3 +1,5 @@
+import filecmp
+
 import pytest
 
 from anki_ai.domain.model import Note
@@ -174,28 +176,16 @@ def test_deck_read_txt_logging(caplog, deck):
     assert caplog.text == ""
 
 
-def test_deck_write_header(empty_deck, simple_file, tmp_path):
+def test_deck_write_txt(empty_deck, simple_file, tmp_path):
     # given
     empty_deck.read_txt(simple_file)
 
     # when
-    fpath = tmp_path / "new.txt"
-    empty_deck.write_txt(fpath)
+    out_fpath = tmp_path / "new.txt"
+    empty_deck.write_txt(out_fpath)
 
     # then
-    expected = ""
-    with open(simple_file, "r") as f:
-        for line in f.readlines():
-            if line.startswith("#"):
-                expected += line
-            else:
-                break
-
-    result = ""
-    with open(fpath, "r") as f:
-        for line in f.readlines():
-            if line.startswith("#"):
-                result += line
-            else:
-                break
-    assert expected == result
+    # for f in [simple_file, out_fpath]:
+    #     with open(f, "r") as o:
+    #         print(o.readlines())
+    assert filecmp.cmp(simple_file, out_fpath)
