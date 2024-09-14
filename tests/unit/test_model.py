@@ -176,19 +176,16 @@ def test_deck_read_txt_logging(caplog, deck):
     assert caplog.text == ""
 
 
-# @pytest.mark.parametrize(
-#     argnames="ignore_media,result", argvalues=[(True, 10), (False, 12)]
-# )
 @pytest.mark.parametrize(argnames="fpath", argvalues=["simple_file", "complex_file"])
 def test_deck_write_txt(fpath, request, tmp_path):
     # given
-    file = request.getfixturevalue(fpath)
+    in_fpath = request.getfixturevalue(fpath)
     deck = Deck("Default")
-    deck.read_txt(file)
+    deck.read_txt(in_fpath)
 
     # when
     out_fpath = tmp_path / "new.txt"
     deck.write_txt(out_fpath)
 
     # then
-    assert filecmp.cmp(file, out_fpath)
+    assert filecmp.cmp(in_fpath, out_fpath)

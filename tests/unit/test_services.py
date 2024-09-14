@@ -39,3 +39,7 @@ class FakeChatCompletion:
 def test_format_note(note1):
     result = format_note(note1, FakeChatCompletion())
     assert isinstance(result, Note)
+
+
+def test_format_deck_cli():
+    pass
