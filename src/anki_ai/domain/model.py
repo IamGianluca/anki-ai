@@ -120,7 +120,7 @@ class Deck:
                 if self.notetype_ncol_:
                     out += f"{note.notetype}\t"
                 if self.deck_ncol_:
-                    out += f"{self.name}\t"
+                    out += f"{note.deck_name}\t"
                 out += f"{note.front}\t{note.back}\t\t\t\t"
                 if self.tags_ncol_:
                     tags = " ".join(note.tags)
