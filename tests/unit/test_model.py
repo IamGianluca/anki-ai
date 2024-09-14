@@ -2,7 +2,7 @@ import filecmp
 
 import pytest
 
-from anki_ai.domain.model import Note
+from anki_ai.domain.model import Deck, Note
 
 SIMPLE_FILE_FPATH = "./tests/data/test_data.txt"
 COMPLEX_FILE_FPATH = "./tests/data/test_data_incl_.txt"
@@ -18,10 +18,10 @@ def test_note_repr(note1):
     result = repr(note1)
 
     # then
-    uuid, front, back, tags = note1.uuid, note1.front, note1.back, note1.tags
+    guid, front, back, tags = note1.guid, note1.front, note1.back, note1.tags
     assert (
         result
-        == f"Note(front='{front}', back='{back}', tags={tags}, uuid={uuid}, note_type=None, deck_name=None)"
+        == f"Note(front='{front}', back='{back}', tags={tags}, guid={guid}, notetype=None, deck_name=None)"
     )
 
 
@@ -114,14 +114,14 @@ def test_read_txt_with_deck_columns(empty_deck, tmp_path):
     # given
     deck_file = tmp_path / "deck_columns.txt"
     deck_file.write_text(
-        "#separator:tab\n#deck columns:3\nuuid\tnote_type\tdeck_name\tfront\tback\ttags\n"
+        "#separator:tab\n#deck columns:3\nguid\tnotetype\tdeck_name\tfront\tback\ttags\n"
     )
 
     # when
     empty_deck.read_txt(deck_file)
 
     # then
-    assert empty_deck.deck_ncols_ == 3
+    assert empty_deck.deck_ncol_ == 3
 
 
 def test_deck_length(deck):
@@ -160,8 +160,8 @@ def test_deck_read_txt_more_fields(deck):
     result = deck[4]
 
     # then
-    assert result.uuid == "Azd65{j+,q"
-    assert result.note_type == "KaTeX and Markdown Basic"
+    assert result.guid == "Azd65{j+,q"
+    assert result.notetype == "KaTeX and Markdown Basic"
     assert result.deck_name == "Default"
     assert result.front == "Command to create a soft link"
     assert result.back == "```bash $ ln -s <file_name> <link_name> ```"
@@ -176,16 +176,19 @@ def test_deck_read_txt_logging(caplog, deck):
     assert caplog.text == ""
 
 
-def test_deck_write_txt(empty_deck, simple_file, tmp_path):
+# @pytest.mark.parametrize(
+#     argnames="ignore_media,result", argvalues=[(True, 10), (False, 12)]
+# )
+@pytest.mark.parametrize(argnames="fpath", argvalues=["simple_file", "complex_file"])
+def test_deck_write_txt(fpath, request, tmp_path):
     # given
-    empty_deck.read_txt(simple_file)
+    file = request.getfixturevalue(fpath)
+    deck = Deck("Default")
+    deck.read_txt(file)
 
     # when
     out_fpath = tmp_path / "new.txt"
-    empty_deck.write_txt(out_fpath)
+    deck.write_txt(out_fpath)
 
     # then
-    # for f in [simple_file, out_fpath]:
-    #     with open(f, "r") as o:
-    #         print(o.readlines())
-    assert filecmp.cmp(simple_file, out_fpath)
+    assert filecmp.cmp(file, out_fpath)

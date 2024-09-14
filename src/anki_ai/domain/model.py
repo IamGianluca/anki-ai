@@ -9,8 +9,8 @@ class Note(BaseModel):
     front: str
     back: str
     tags: Optional[List[str]] = None
-    uuid: Optional[str] = None
-    note_type: Optional[str] = None
+    guid: Optional[str] = None
+    notetype: Optional[str] = None
     deck_name: Optional[str] = None
 
 
@@ -20,8 +20,10 @@ class Deck:
         self._collection: List = []
         self.sep_: str = ""
         self.html_: bool = True
-        self.deck_ncols_: int = 0
-        self.tags_ncols_: int = 0
+        self.guid_ncol_: Optional[int] = None
+        self.notetype_ncol_: Optional[int] = None
+        self.deck_ncol_: int = 0
+        self.tags_ncol_: int = 0
 
     def __getitem__(self, slice) -> List[Note]:
         return self._collection[slice]
@@ -49,12 +51,12 @@ class Deck:
 
     def _process_line(self, line: str) -> dict[str, Any]:
         attrs = dict()
-        if self.deck_ncols_ > 0:
-            uuid, note_type, deck_name = line.split(self.sep_)[: self.deck_ncols_]
-            attrs["uuid"] = uuid
-            attrs["note_type"] = note_type
+        if self.deck_ncol_ > 0:
+            guid, notetype, deck_name = line.split(self.sep_)[: self.deck_ncol_]
+            attrs["guid"] = guid
+            attrs["notetype"] = notetype
             attrs["deck_name"] = deck_name
-        front, back, _, _, _, tags = line.split(self.sep_)[self.deck_ncols_ :]
+        front, back, _, _, _, tags = line.split(self.sep_)[self.deck_ncol_ :]
         attrs["front"] = front
         attrs["back"] = back
 
@@ -90,18 +92,40 @@ class Deck:
 
     def _extract_ncols(self, line: str) -> None:
         col_type, n_cols = line.split(":")
-        if "deck" in col_type:
-            self.deck_ncols_ = int(n_cols)
+        if "guid" in col_type:
+            self.guid_ncol_ = int(n_cols)
+        elif "notetype" in col_type:
+            self.notetype_ncol_ = int(n_cols)
+        elif "deck" in col_type:
+            self.deck_ncol_ = int(n_cols)
         elif "tags" in col_type:
-            self.tags_ncols_ = int(n_cols)
+            self.tags_ncol_ = int(n_cols)
 
     def write_txt(self, fpath) -> None:
         with open(fpath, "w") as f:
             f.write(f"#separator:{symbol2sep[self.sep_]}\n")
             f.write(f"#html:{symbol2html[self.html_]}\n")
+            if self.guid_ncol_:
+                f.write(f"#guid column:{self.guid_ncol_}\n")
+            if self.notetype_ncol_:
+                f.write(f"#notetype column:{self.notetype_ncol_}\n")
+            if self.deck_ncol_:
+                f.write(f"#deck column:{self.deck_ncol_}\n")
+            if self.tags_ncol_:
+                f.write(f"#tags column:{self.tags_ncol_}\n")
             for note in self:
-                tags = " ".join(note.tags)
-                f.write(f"{note.front}\t{note.back}\t\t\t\t{tags}\n")
+                out = ""
+                if self.guid_ncol_:
+                    out += f"{note.guid}\t"
+                if self.notetype_ncol_:
+                    out += f"{note.notetype}\t"
+                if self.deck_ncol_:
+                    out += f"{self.name}\t"
+                out += f"{note.front}\t{note.back}\t\t\t\t"
+                if self.tags_ncol_:
+                    tags = " ".join(note.tags)
+                    out += f"{tags}"
+                f.write(f"{out}\n")
 
 
 sep2symbol = {"tab": "\t"}

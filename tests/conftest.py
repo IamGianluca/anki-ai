@@ -8,7 +8,16 @@ from anki_ai.domain.model import Deck, Note
 def simple_file(tmp_path):
     file = tmp_path / "simple_file.txt"
     file.write_text(
-        "#separator:tab\n#html:true\n<b>front</b>\t<i>back</i>\t\t\t\ttag1 tag2\n"
+        "#separator:tab\n#html:true\n#tags column:6\n<b>front</b>\t<i>back</i>\t\t\t\ttag1 tag2\n"
+    )
+    return file
+
+
+@pytest.fixture
+def complex_file(tmp_path):
+    file = tmp_path / "complex_file.txt"
+    file.write_text(
+        "#separator:tab\n#html:true\n#guid column:1\n#notetype column:2\n#deck column:3\n#tags column:6\nMm+g*FhiWM\tKaTeX and Markdown Basic\tDefault\tWhat is the command to list the content of a directory?\t```bash $ ls <path> ```\t\t\t\tlinux\n"
     )
     return file
 
