@@ -23,6 +23,7 @@ jobs:
           uv venv
           VIRTUAL_ENV=./.venv
           UV_HTTP_TIMEOUT=600  # often hitting network timeout in GitHub Action (CI)
+          uv cache clean
           uv pip install -e ".[dev]"
       - name: Test with pytest
         run: |
