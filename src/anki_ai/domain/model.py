@@ -103,29 +103,35 @@ class Deck:
 
     def write_txt(self, fpath) -> None:
         with open(fpath, "w") as f:
-            f.write(f"#separator:{symbol2sep[self.sep_]}\n")
-            f.write(f"#html:{symbol2html[self.html_]}\n")
-            if self.guid_ncol_:
-                f.write(f"#guid column:{self.guid_ncol_}\n")
-            if self.notetype_ncol_:
-                f.write(f"#notetype column:{self.notetype_ncol_}\n")
-            if self.deck_ncol_:
-                f.write(f"#deck column:{self.deck_ncol_}\n")
-            if self.tags_ncol_:
-                f.write(f"#tags column:{self.tags_ncol_}\n")
+            self._write_header(f)
             for note in self:
-                out = ""
-                if self.guid_ncol_:
-                    out += f"{note.guid}\t"
-                if self.notetype_ncol_:
-                    out += f"{note.notetype}\t"
-                if self.deck_ncol_:
-                    out += f"{note.deck_name}\t"
-                out += f"{note.front}\t{note.back}\t\t\t\t"
-                if self.tags_ncol_:
-                    tags = " ".join(note.tags)
-                    out += f"{tags}"
-                f.write(f"{out}\n")
+                self._write_note(f, note)
+
+    def _write_header(self, f) -> None:
+        f.write(f"#separator:{symbol2sep[self.sep_]}\n")
+        f.write(f"#html:{symbol2html[self.html_]}\n")
+        if self.guid_ncol_:
+            f.write(f"#guid column:{self.guid_ncol_}\n")
+        if self.notetype_ncol_:
+            f.write(f"#notetype column:{self.notetype_ncol_}\n")
+        if self.deck_ncol_:
+            f.write(f"#deck column:{self.deck_ncol_}\n")
+        if self.tags_ncol_:
+            f.write(f"#tags column:{self.tags_ncol_}\n")
+
+    def _write_note(self, f, note) -> None:
+        out = ""
+        if self.guid_ncol_:
+            out += f"{note.guid}\t"
+        if self.notetype_ncol_:
+            out += f"{note.notetype}\t"
+        if self.deck_ncol_:
+            out += f"{note.deck_name}\t"
+        out += f"{note.front}\t{note.back}\t\t\t\t"
+        if self.tags_ncol_:
+            tags = " ".join(note.tags)
+            out += f"{tags}"
+        f.write(f"{out}\n")
 
 
 sep2symbol = {"tab": "\t"}
