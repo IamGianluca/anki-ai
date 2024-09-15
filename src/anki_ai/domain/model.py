@@ -1,3 +1,4 @@
+from collections.abc import Generator
 from pathlib import Path
 from typing import Any, List, Optional
 
@@ -28,11 +29,18 @@ class Deck:
     def __getitem__(self, slice) -> List[Note]:
         return self._collection[slice]
 
+    def __iter__(self) -> Generator[Note, None, None]:
+        yield from self._collection
+
     def __len__(self) -> int:
         return len(self._collection)
 
     def add(self, note: List[Note]) -> None:
         self._collection.extend(note)
+
+    def get(self, guid: str) -> List[Note]:
+        result = [note for note in self if note.guid == guid]
+        return result
 
     def read_txt(self, fpath: Path, ignore_media: bool = True) -> None:
         with open(fpath) as f:

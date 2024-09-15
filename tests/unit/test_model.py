@@ -33,6 +33,20 @@ def test_retrieve_element_from_deck(note1, deck):
     assert result == note1
 
 
+def test_deck_retrieve_by_guid():
+    # given
+    deck = Deck()
+    note = Note(guid="teuha", front="front", back="back")
+    another_note = Note(guid="etuha234241ueuo", front="front", back="back")
+    deck.add([another_note, note])
+
+    # when
+    result = deck.get(guid="teuha")
+
+    # then
+    assert [note] == result
+
+
 def test_retrieve_slice_from_deck(note1, note2, deck):
     # when
     result = deck[:2]
