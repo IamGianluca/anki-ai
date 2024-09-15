@@ -49,22 +49,13 @@ class Deck:
                     except ValueError as e:
                         logger.warning(f"Error while processing line {i}: {e}")
 
-    def _process_line(self, line: str) -> dict[str, Any]:
-        attrs = dict()
-        if self.deck_ncol_ > 0:
-            guid, notetype, deck_name = line.split(self.sep_)[: self.deck_ncol_]
-            attrs["guid"] = guid
-            attrs["notetype"] = notetype
-            attrs["deck_name"] = deck_name
-        front, back, _, _, _, tags = line.split(self.sep_)[self.deck_ncol_ :]
-        attrs["front"] = front
-        attrs["back"] = back
-
-        # convert tags as a list of str
-        tags = tags.replace("\n", "")
-        tags = list(tags.split(" "))
-        attrs["tags"] = tags
-        return attrs
+    def _parse_header(self, line: str) -> None:
+        if "separator" in line:
+            self._extract_separator(line)
+        if "html" in line:
+            self._extract_html(line)
+        if "column" in line:
+            self._extract_ncols(line)
 
     def _extract_separator(self, line) -> None:
         _, sep = line.strip().split(":")
@@ -74,14 +65,6 @@ class Deck:
             raise NotImplementedError(
                 f"Only tab-separated files are supported. Found {sep}"
             )
-
-    def _parse_header(self, line: str) -> None:
-        if "separator" in line:
-            self._extract_separator(line)
-        if "html" in line:
-            self._extract_html(line)
-        if "column" in line:
-            self._extract_ncols(line)
 
     def _extract_html(self, line: str) -> None:
         _, html = line.strip().split(":")
@@ -100,6 +83,23 @@ class Deck:
             self.deck_ncol_ = int(n_cols)
         elif "tags" in col_type:
             self.tags_ncol_ = int(n_cols)
+
+    def _process_line(self, line: str) -> dict[str, Any]:
+        attrs = dict()
+        if self.deck_ncol_ > 0:
+            guid, notetype, deck_name = line.split(self.sep_)[: self.deck_ncol_]
+            attrs["guid"] = guid
+            attrs["notetype"] = notetype
+            attrs["deck_name"] = deck_name
+        front, back, _, _, _, tags = line.split(self.sep_)[self.deck_ncol_ :]
+        attrs["front"] = front
+        attrs["back"] = back
+
+        # convert tags as a list of str
+        tags = tags.replace("\n", "")
+        tags = list(tags.split(" "))
+        attrs["tags"] = tags
+        return attrs
 
     def write_txt(self, fpath) -> None:
         with open(fpath, "w") as f:
