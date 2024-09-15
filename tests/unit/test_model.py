@@ -219,3 +219,18 @@ def test_deck_write_txt(fpath, request, tmp_path):
 
     # then
     assert filecmp.cmp(in_fpath, out_fpath)
+
+
+def test_update_note_in_deck():
+    # given
+    note = Note(guid="guid", front="front", back="back")
+    deck = Deck()
+    deck.add([note])
+
+    # when
+    new_note = Note(guid="guid", front="new front", back="new back")
+    deck.update(guid="guid", new_note=new_note)
+
+    # then
+    assert len(deck) == 1
+    assert deck.get(guid="guid") == [new_note]

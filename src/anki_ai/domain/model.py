@@ -39,8 +39,12 @@ class Deck:
         self._collection.extend(note)
 
     def get(self, guid: str) -> List[Note]:
-        result = [note for note in self if note.guid == guid]
-        return result
+        return [note for note in self if note.guid == guid]
+
+    def update(self, guid: str, new_note: Note) -> None:
+        old_note = self.get(guid=guid)[0]
+        old_note.front = new_note.front
+        old_note.back = new_note.back
 
     def read_txt(self, fpath: Path, ignore_media: bool = True) -> None:
         with open(fpath) as f:
