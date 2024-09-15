@@ -1,6 +1,5 @@
 install:
-	uv pip compile --all-extras pyproject.toml -o requirements.txt && \
-	uv pip sync requirements.txt && \
+	uv sync --all-extras && \
 	uv pip install -e . 
 
 test:
