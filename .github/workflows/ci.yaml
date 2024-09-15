@@ -26,4 +26,4 @@ jobs:
           uv sync --all-extras
           uv pip install -e .
       - name: Run test suite
-        run: make test
+        run: uv run make test
