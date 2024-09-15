@@ -9,7 +9,10 @@ COMPLEX_FILE_FPATH = "./tests/data/test_data_incl_.txt"
 
 
 def test_read_from_fake_file(empty_deck, simple_file):
+    # when
     empty_deck.read_txt(simple_file)
+
+    # then
     assert len(empty_deck) > 0
 
 
@@ -56,27 +59,39 @@ def test_retrieve_slice_from_deck(note1, note2, deck):
 
 
 def test_add_single_note(empty_deck):
+    # given
     note = Note(front="Test Front", back="Test Back")
+
+    # when
     empty_deck.add([note])
+
+    # then
     assert len(empty_deck) == 1
     assert empty_deck[0] == note
 
 
 def test_add_multiple_notes(empty_deck, note1, note2, note3):
+    # given
     notes = [
         note1,
         note2,
         note3,
     ]
+
+    # when
     empty_deck.add(notes)
+
+    # then
     assert len(empty_deck) == 3
     assert empty_deck[:] == notes
 
 
 def test_read_txt_with_invalid_separator(empty_deck, tmp_path):
+    # given
     invalid_file = tmp_path / "invalid_separator.txt"
     invalid_file.write_text("#separator:comma\nfront,back,tags\n")
 
+    # when / then
     with pytest.raises(
         NotImplementedError, match="Only tab-separated files are supported"
     ):
@@ -87,6 +102,7 @@ def test_deck_iterable(deck):
     # when
     result = [note for note in deck]
 
+    # then
     assert len(result) == 2
 
 
