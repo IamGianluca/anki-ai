@@ -28,36 +28,6 @@ def test_note_repr(note1):
     )
 
 
-def test_retrieve_element_from_deck(note1, deck):
-    # when
-    result = deck[0]
-
-    # then
-    assert result == note1
-
-
-def test_deck_retrieve_by_guid():
-    # given
-    deck = Deck()
-    note = Note(guid="teuha", front="front", back="back")
-    another_note = Note(guid="etuha234241ueuo", front="front", back="back")
-    deck.add([another_note, note])
-
-    # when
-    result = deck.get(guid="teuha")
-
-    # then
-    assert [note] == result
-
-
-def test_retrieve_slice_from_deck(note1, note2, deck):
-    # when
-    result = deck[:2]
-
-    # then
-    assert result == [note1, note2]
-
-
 def test_add_single_note(empty_deck):
     # given
     note = Note(front="Test Front", back="Test Back")
@@ -84,6 +54,44 @@ def test_add_multiple_notes(empty_deck, note1, note2, note3):
     # then
     assert len(empty_deck) == 3
     assert empty_deck[:] == notes
+
+
+def test_deck_length(deck):
+    # when
+    result = len(deck)
+
+    # then
+    assert result == 2
+
+
+def test_retrieve_element_from_deck(note1, deck):
+    # when
+    result = deck[0]
+
+    # then
+    assert result == note1
+
+
+def test_retrieve_note_from_deck_by_guid():
+    # given
+    deck = Deck()
+    note = Note(guid="teuha", front="front", back="back")
+    another_note = Note(guid="etuha234241ueuo", front="front", back="back")
+    deck.add([another_note, note])
+
+    # when
+    result = deck.get(guid="teuha")
+
+    # then
+    assert [note] == result
+
+
+def test_retrieve_slice_from_deck(note1, note2, deck):
+    # when
+    result = deck[:2]
+
+    # then
+    assert result == [note1, note2]
 
 
 def test_read_txt_with_invalid_separator(empty_deck, tmp_path):
@@ -152,14 +160,6 @@ def test_read_txt_with_deck_columns(empty_deck, tmp_path):
 
     # then
     assert empty_deck.deck_ncol_ == 3
-
-
-def test_deck_length(deck):
-    # when
-    result = len(deck)
-
-    # then
-    assert result == 2
 
 
 @pytest.mark.parametrize(
