@@ -41,10 +41,14 @@ class Deck:
     def get(self, guid: str) -> List[Note]:
         return [note for note in self if note.guid == guid]
 
-    def update(self, guid: str, new_note: Note) -> None:
-        old_note = self.get(guid=guid)[0]
-        old_note.front = new_note.front
-        old_note.back = new_note.back
+    def update(self, guid: str, changes: Note) -> None:
+        if guid is None:
+            raise ValueError("guid can't be None.")
+        note = self.get(guid=guid)[0]
+        logger.info(f"Original note: {note}")
+        note.front = changes.front
+        note.back = changes.back
+        print(f"Updated note: {note}")
 
     def read_txt(self, fpath: Path, ignore_media: bool = True) -> None:
         with open(fpath) as f:

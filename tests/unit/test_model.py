@@ -229,7 +229,7 @@ def test_update_note_in_deck():
 
     # when
     new_note = Note(guid="guid", front="new front", back="new back")
-    deck.update(guid="guid", new_note=new_note)
+    deck.update(guid="guid", changes=new_note)
 
     # then
     assert len(deck) == 1

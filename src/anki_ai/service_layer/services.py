@@ -4,6 +4,7 @@ from pathlib import Path
 from typing import Any, Protocol, cast
 
 import fire
+from loguru import logger
 from openai import OpenAI
 
 from anki_ai.domain.model import Deck, Note
@@ -153,7 +154,13 @@ def format_deck(in_path: Path, out_path: Path) -> None:
     deck.read_txt(in_path)
 
     for note in deck:
-        new_note = format_note(note=note, chat=chat)
+        try:
+            new_note = format_note(note=note, chat=chat)
+            deck.update(guid=note.guid, changes=new_note)
+        except Exception as e:
+            logger.warning(f"Skipping note {note}: {e}")
+
+    deck.write_txt(out_path)
 
 
 if __name__ == "__main__":
