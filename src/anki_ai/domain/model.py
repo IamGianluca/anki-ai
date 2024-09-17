@@ -18,25 +18,25 @@ class Note(BaseModel):
 class Deck:
     def __init__(self, name: str = "default") -> None:
         self.name: str = name
-        self._collection: List = []
-        self.sep_: str = ""
-        self.html_: bool = True
-        self.guid_ncol_: Optional[int] = None
-        self.notetype_ncol_: Optional[int] = None
-        self.deck_ncol_: int = 0
-        self.tags_ncol_: int = 0
+        self.__collection: List = []
+        self.__sep: str = ""
+        self.__html: bool = True
+        self.__guid_ncol: Optional[int] = None
+        self.__notetype_ncol: Optional[int] = None
+        self.__deck_ncol: int = 0
+        self.__tags_ncol: int = 0
 
     def __getitem__(self, slice) -> List[Note]:
-        return self._collection[slice]
+        return self.__collection[slice]
 
     def __iter__(self) -> Generator[Note, None, None]:
-        yield from self._collection
+        yield from self.__collection
 
     def __len__(self) -> int:
-        return len(self._collection)
+        return len(self.__collection)
 
     def add(self, note: List[Note]) -> None:
-        self._collection.extend(note)
+        self.__collection.extend(note)
 
     def get(self, guid: str) -> List[Note]:
         return [note for note in self if note.guid == guid]
@@ -58,7 +58,7 @@ class Deck:
                 else:
                     try:
                         attrs = self._process_line(line)
-                        self._collection.append(Note(**attrs))
+                        self.__collection.append(Note(**attrs))
                     except ValueError as e:
                         logger.warning(
                             f"Error while processing line {i} ({line}) : {e}"
@@ -75,7 +75,7 @@ class Deck:
     def _extract_separator(self, line) -> None:
         _, sep = line.strip().split(":")
         if sep == "tab":
-            self.sep_ = "\t"
+            self.__sep = "\t"
         else:
             raise NotImplementedError(
                 f"Only tab-separated files are supported. Found {sep}"
@@ -84,29 +84,29 @@ class Deck:
     def _extract_html(self, line: str) -> None:
         _, html = line.strip().split(":")
         if html == "true":
-            self.html_ = True
+            self.__html = True
         else:
-            self.html_ = False
+            self.__html = False
 
     def _extract_ncols(self, line: str) -> None:
         col_type, n_cols = line.split(":")
         if "guid" in col_type:
-            self.guid_ncol_ = int(n_cols)
+            self.__guid_ncol = int(n_cols)
         elif "notetype" in col_type:
-            self.notetype_ncol_ = int(n_cols)
+            self.__notetype_ncol = int(n_cols)
         elif "deck" in col_type:
-            self.deck_ncol_ = int(n_cols)
+            self.__deck_ncol = int(n_cols)
         elif "tags" in col_type:
-            self.tags_ncol_ = int(n_cols)
+            self.__tags_ncol = int(n_cols)
 
     def _process_line(self, line: str) -> dict[str, Any]:
         attrs = dict()
-        if self.deck_ncol_ > 0:
-            guid, notetype, deck_name = line.split(self.sep_)[: self.deck_ncol_]
+        if self.__deck_ncol > 0:
+            guid, notetype, deck_name = line.split(self.__sep)[: self.__deck_ncol]
             attrs["guid"] = guid
             attrs["notetype"] = notetype
             attrs["deck_name"] = deck_name
-        front, back, _, _, _, tags = line.split(self.sep_)[self.deck_ncol_ :]
+        front, back, _, _, _, tags = line.split(self.__sep)[self.__deck_ncol :]
         attrs["front"] = front
         attrs["back"] = back
 
@@ -123,27 +123,27 @@ class Deck:
                 self._write_note(f, note)
 
     def _write_header(self, f) -> None:
-        f.write(f"#separator:{symbol2sep[self.sep_]}\n")
-        f.write(f"#html:{symbol2html[self.html_]}\n")
-        if self.guid_ncol_:
-            f.write(f"#guid column:{self.guid_ncol_}\n")
-        if self.notetype_ncol_:
-            f.write(f"#notetype column:{self.notetype_ncol_}\n")
-        if self.deck_ncol_:
-            f.write(f"#deck column:{self.deck_ncol_}\n")
-        if self.tags_ncol_:
-            f.write(f"#tags column:{self.tags_ncol_}\n")
+        f.write(f"#separator:{symbol2sep[self.__sep]}\n")
+        f.write(f"#html:{symbol2html[self.__html]}\n")
+        if self.__guid_ncol:
+            f.write(f"#guid column:{self.__guid_ncol}\n")
+        if self.__notetype_ncol:
+            f.write(f"#notetype column:{self.__notetype_ncol}\n")
+        if self.__deck_ncol:
+            f.write(f"#deck column:{self.__deck_ncol}\n")
+        if self.__tags_ncol:
+            f.write(f"#tags column:{self.__tags_ncol}\n")
 
     def _write_note(self, f, note) -> None:
         out = ""
-        if self.guid_ncol_:
+        if self.__guid_ncol:
             out += f"{note.guid}\t"
-        if self.notetype_ncol_:
+        if self.__notetype_ncol:
             out += f"{note.notetype}\t"
-        if self.deck_ncol_:
+        if self.__deck_ncol:
             out += f"{note.deck_name}\t"
         out += f"{note.front}\t{note.back}\t\t\t\t"
-        if self.tags_ncol_:
+        if self.__tags_ncol:
             tags = " ".join(note.tags)
             out += f"{tags}"
         f.write(f"{out}\n")

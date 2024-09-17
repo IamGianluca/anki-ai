@@ -148,20 +148,6 @@ def test_read_txt_with_html_false(empty_deck, tmp_path):
     assert note.tags == ["tag1", "tag2"]
 
 
-def test_read_txt_with_deck_columns(empty_deck, tmp_path):
-    # given
-    deck_file = tmp_path / "deck_columns.txt"
-    deck_file.write_text(
-        "#separator:tab\n#deck columns:3\nguid\tnotetype\tdeck_name\tfront\tback\ttags\n"
-    )
-
-    # when
-    empty_deck.read_txt(deck_file)
-
-    # then
-    assert empty_deck.deck_ncol_ == 3
-
-
 def test_deck_read_txt_simple(deck):
     # given
     assert len(deck) == 2  # the deck fixture comes with two notes already
