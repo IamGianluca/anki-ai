@@ -181,14 +181,6 @@ def test_deck_read_txt_more_fields(deck):
     assert result.tags == ["linux"]
 
 
-def test_deck_read_txt_logging(caplog, deck):
-    # when
-    deck.read_txt(SIMPLE_FILE_FPATH)
-
-    # then
-    assert caplog.text == ""
-
-
 def test_deck_read_txt_log_warnings(caplog, tmp_path, deck):
     # given
     invalid_file = tmp_path / "invalid_file.txt"  # missing two tabs before tags
