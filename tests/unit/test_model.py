@@ -189,6 +189,21 @@ def test_deck_read_txt_logging(caplog, deck):
     assert caplog.text == ""
 
 
+def test_deck_read_txt_log_warnings(caplog, tmp_path, deck):
+    # given
+    invalid_file = tmp_path / "invalid_file.txt"  # missing two tabs before tags
+    invalid_file.write_text("#separator:tab\n#html:false\nfront\tback\t\ttag1 tag2\n")
+
+    # when
+    deck.read_txt(invalid_file)
+
+    # then
+    assert (
+        caplog.text
+        == "WARNING  anki_ai.domain.model:model.py:61 Error while processing line 2 (front\tback\t\ttag1 tag2\n) : not enough values to unpack (expected 6, got 4)\n"
+    )
+
+
 @pytest.mark.parametrize(argnames="fpath", argvalues=["simple_file", "complex_file"])
 def test_deck_write_txt(fpath, request, tmp_path):
     # given
