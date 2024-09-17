@@ -50,20 +50,19 @@ class Deck:
         note.back = changes.back
         print(f"Updated note: {note}")
 
-    def read_txt(self, fpath: Path, ignore_media: bool = True) -> None:
+    def read_txt(self, fpath: Path) -> None:
         with open(fpath) as f:
             for i, line in enumerate(f):
                 if line.startswith("#"):
                     self._parse_header(line)
                 else:
                     try:
-                        if ignore_media:
-                            if "<img src=" in line:
-                                continue
                         attrs = self._process_line(line)
                         self._collection.append(Note(**attrs))
                     except ValueError as e:
-                        logger.warning(f"Error while processing line {i}: {e}")
+                        logger.warning(
+                            f"Error while processing line {i} ({line}) : {e}"
+                        )
 
     def _parse_header(self, line: str) -> None:
         if "separator" in line:

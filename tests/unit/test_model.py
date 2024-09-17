@@ -162,18 +162,15 @@ def test_read_txt_with_deck_columns(empty_deck, tmp_path):
     assert empty_deck.deck_ncol_ == 3
 
 
-@pytest.mark.parametrize(
-    argnames="ignore_media,result", argvalues=[(True, 10), (False, 12)]
-)
-def test_deck_read_txt_simple(deck, ignore_media, result):
+def test_deck_read_txt_simple(deck):
     # given
     assert len(deck) == 2  # the deck fixture comes with two notes already
 
     # when
-    deck.read_txt(SIMPLE_FILE_FPATH, ignore_media=ignore_media)
+    deck.read_txt(SIMPLE_FILE_FPATH)
 
     # then
-    assert len(deck) == result  # 2 existing + 8 non-media sample + 2 media samples
+    assert len(deck) == 12  # 2 existing + 10 sample
 
 
 def test_deck_read_txt_more_fields(deck):
