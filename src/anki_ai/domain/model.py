@@ -42,8 +42,6 @@ class Deck:
         return [note for note in self if note.guid == guid]
 
     def update(self, guid: str, changes: Note) -> None:
-        if guid is None:
-            raise ValueError("guid can't be None.")
         note = self.get(guid=guid)[0]
         logger.info(f"Original note: {note}")
         note.front = changes.front
