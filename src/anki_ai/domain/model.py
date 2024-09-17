@@ -46,7 +46,7 @@ class Deck:
         logger.info(f"Original note: {note}")
         note.front = changes.front
         note.back = changes.back
-        print(f"Updated note: {note}")
+        logger.info(f"Updated note: {note}")
 
     def read_txt(self, fpath: Path) -> None:
         with open(fpath) as f:

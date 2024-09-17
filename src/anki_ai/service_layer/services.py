@@ -5,7 +5,7 @@ from typing import Any, Protocol, cast
 
 import fire
 from loguru import logger
-from openai import OpenAI
+from openai import APIConnectionError, OpenAI
 
 from anki_ai.domain.model import Deck, Note
 
@@ -157,6 +157,11 @@ def format_deck(in_path: Path, out_path: Path) -> None:
         try:
             new_note = format_note(note=note, chat=chat)
             deck.update(guid=note.guid, changes=new_note)
+        except APIConnectionError as e:
+            raise APIConnectionError(
+                request=e.request,
+                message="LLM inference server is not reachable. Make sure you have started it with `make vllm` command.",
+            ) from e
         except Exception as e:
             logger.warning(f"Skipping note {note}: {e}")
 
