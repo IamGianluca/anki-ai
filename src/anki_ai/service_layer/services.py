@@ -6,6 +6,7 @@ from typing import Any, Protocol, cast
 import fire
 from loguru import logger
 from openai import APIConnectionError, OpenAI
+from tqdm import tqdm
 
 from anki_ai.domain.model import Deck, Note
 
@@ -153,7 +154,7 @@ def format_deck(in_path: Path, out_path: Path) -> None:
     deck = Deck()
     deck.read_txt(in_path)
 
-    for note in deck:
+    for note in tqdm(deck):
         try:
             new_note = format_note(note=note, chat=chat)
             deck.update(guid=note.guid, changes=new_note)
