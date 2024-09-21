@@ -5,8 +5,8 @@ from anki_ai.domain.model import Deck, Note
 
 
 @pytest.fixture
-def complex_file(tmp_path):
-    file = tmp_path / "complex_file.txt"
+def test_file(tmp_path):
+    file = tmp_path / "test_file.txt"
     file.write_text(
         "#separator:tab\n#html:true\n#guid column:1\n#notetype column:2\n#deck column:3\n#tags column:6\nMm+g*FhiWM\tKaTeX and Markdown Basic\tDefault\tWhat is the command to list the content of a directory?\t```bash $ ls <path> ```\t\t\t\tlinux\n"
     )

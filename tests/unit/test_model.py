@@ -4,13 +4,12 @@ import pytest
 
 from anki_ai.domain.model import Deck, Note
 
-SIMPLE_FILE_FPATH = "./tests/data/test_data.txt"
-COMPLEX_FILE_FPATH = "./tests/data/test_data_incl_.txt"
+TEST_DATA_FILE_FPATH = "./tests/data/test_data.txt"
 
 
-def test_read_from_fake_file(empty_deck, complex_file):
+def test_read_from_fake_file(empty_deck, test_file):
     # when
-    empty_deck.read_txt(complex_file)
+    empty_deck.read_txt(test_file)
 
     # then
     assert len(empty_deck) > 0
@@ -155,7 +154,7 @@ def test_deck_read_txt_more_fields(deck):
     assert len(deck) == 2
 
     # when
-    deck.read_txt(COMPLEX_FILE_FPATH)
+    deck.read_txt(TEST_DATA_FILE_FPATH)
 
     # then
     assert len(deck) == 10
@@ -187,17 +186,17 @@ def test_deck_read_txt_log_warnings(caplog, tmp_path, deck):
     )
 
 
-def test_deck_write_txt(complex_file, tmp_path):
+def test_deck_write_txt(test_file, tmp_path):
     # given
     deck = Deck("Default")
-    deck.read_txt(complex_file)
+    deck.read_txt(test_file)
 
     # when
     out_fpath = tmp_path / "new.txt"
     deck.write_txt(out_fpath)
 
     # then
-    assert filecmp.cmp(complex_file, out_fpath)
+    assert filecmp.cmp(test_file, out_fpath)
 
 
 def test_update_note_in_deck():
