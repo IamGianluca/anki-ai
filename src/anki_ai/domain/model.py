@@ -7,12 +7,18 @@ from pydantic import BaseModel
 
 
 class Note(BaseModel):
+    guid: str
     front: str
     back: str
     tags: Optional[List[str]] = None
-    guid: Optional[str] = None
     notetype: Optional[str] = None
     deck_name: Optional[str] = None
+
+
+class NoteChanges(BaseModel):
+    front: str
+    back: str
+    tags: Optional[List[str]] = None
 
 
 class Deck:

@@ -8,9 +8,9 @@ SIMPLE_FILE_FPATH = "./tests/data/test_data.txt"
 COMPLEX_FILE_FPATH = "./tests/data/test_data_incl_.txt"
 
 
-def test_read_from_fake_file(empty_deck, simple_file):
+def test_read_from_fake_file(empty_deck, complex_file):
     # when
-    empty_deck.read_txt(simple_file)
+    empty_deck.read_txt(complex_file)
 
     # then
     assert len(empty_deck) > 0
@@ -24,13 +24,13 @@ def test_note_repr(note1):
     guid, front, back, tags = note1.guid, note1.front, note1.back, note1.tags
     assert (
         result
-        == f"Note(front='{front}', back='{back}', tags={tags}, guid={guid}, notetype=None, deck_name=None)"
+        == f"Note(guid='{guid}', front='{front}', back='{back}', tags={tags}, notetype=None, deck_name=None)"
     )
 
 
 def test_add_single_note(empty_deck):
     # given
-    note = Note(front="Test Front", back="Test Back")
+    note = Note(guid="fake", front="Test Front", back="Test Back")
 
     # when
     empty_deck.add([note])
@@ -118,7 +118,7 @@ def test_read_txt_with_html_true(empty_deck, tmp_path):
     # given
     html_file = tmp_path / "html_true.txt"
     html_file.write_text(
-        "#separator:tab\n#html:true\n<b>front</b>\t<i>back</i>\t\t\t\ttag1 tag2\n"
+        "#separator:tab\n#html:true\n#guid column:1\n#notetype column:2\n#deck column:3\n#tags column:6\nMm+g*FhiWM\tKaTeX and Markdown Basic\tDefault\t<b>front</b>\t<i>back</i>\t\t\t\ttag1 tag2\n"
     )
 
     # when
@@ -135,7 +135,9 @@ def test_read_txt_with_html_true(empty_deck, tmp_path):
 def test_read_txt_with_html_false(empty_deck, tmp_path):
     # given
     html_file = tmp_path / "html_false.txt"
-    html_file.write_text("#separator:tab\n#html:false\nfront\tback\t\t\t\ttag1 tag2\n")
+    html_file.write_text(
+        "#separator:tab\n#html:false\n#guid column:1\n#notetype column:2\n#deck column:3\n#tags column:6\nMm+g*FhiWM\tKaTeX and Markdown Basic\tDefault\tfront\tback\t\t\t\ttag1 tag2\n"
+    )
 
     # when
     empty_deck.read_txt(html_file)
@@ -146,17 +148,6 @@ def test_read_txt_with_html_false(empty_deck, tmp_path):
     assert note.front == "front"
     assert note.back == "back"
     assert note.tags == ["tag1", "tag2"]
-
-
-def test_deck_read_txt_simple(deck):
-    # given
-    assert len(deck) == 2  # the deck fixture comes with two notes already
-
-    # when
-    deck.read_txt(SIMPLE_FILE_FPATH)
-
-    # then
-    assert len(deck) == 12  # 2 existing + 10 sample
 
 
 def test_deck_read_txt_more_fields(deck):
@@ -192,23 +183,21 @@ def test_deck_read_txt_log_warnings(caplog, tmp_path, deck):
     # then
     assert (
         caplog.text
-        == "WARNING  anki_ai.domain.model:model.py:61 Error while processing line 2 (front\tback\t\ttag1 tag2\n) : not enough values to unpack (expected 6, got 4)\n"
+        == "WARNING  anki_ai.domain.model:model.py:67 Error while processing line 2 (front\tback\t\ttag1 tag2\n) : not enough values to unpack (expected 6, got 4)\n"
     )
 
 
-@pytest.mark.parametrize(argnames="fpath", argvalues=["simple_file", "complex_file"])
-def test_deck_write_txt(fpath, request, tmp_path):
+def test_deck_write_txt(complex_file, tmp_path):
     # given
-    in_fpath = request.getfixturevalue(fpath)
     deck = Deck("Default")
-    deck.read_txt(in_fpath)
+    deck.read_txt(complex_file)
 
     # when
     out_fpath = tmp_path / "new.txt"
     deck.write_txt(out_fpath)
 
     # then
-    assert filecmp.cmp(in_fpath, out_fpath)
+    assert filecmp.cmp(complex_file, out_fpath)
 
 
 def test_update_note_in_deck():

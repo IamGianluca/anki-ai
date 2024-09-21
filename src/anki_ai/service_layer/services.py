@@ -8,7 +8,7 @@ from loguru import logger
 from openai import APIConnectionError, OpenAI
 from tqdm import tqdm
 
-from anki_ai.domain.model import Deck, Note
+from anki_ai.domain.model import Deck, Note, NoteChanges
 
 SYSTEM_MSG = r"""Optimize this Anki note:
 - Concise, simple, distinct
@@ -145,8 +145,10 @@ def format_note(note: Note, chat: ChatCompletionService) -> Note:
         extra_body=extra_body,
     )
     json_data: str = cast(str, chat_response.choices[0].message.content)
-    new_note = Note.model_validate_json(json_data)
-    return new_note
+    suggested_changes = NoteChanges.model_validate_json(json_data)
+    note.front = suggested_changes.front
+    note.back = suggested_changes.back
+    return note
 
 
 def format_deck(in_path: Path, out_path: Path) -> None:
