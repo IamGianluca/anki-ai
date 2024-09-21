@@ -7,14 +7,6 @@ from anki_ai.domain.model import Deck, Note
 TEST_DATA_FILE_FPATH = "./tests/data/test_data.txt"
 
 
-def test_read_from_fake_file(empty_deck, test_file):
-    # when
-    empty_deck.read_txt(test_file)
-
-    # then
-    assert len(empty_deck) > 0
-
-
 def test_note_repr(note1):
     # when
     result = repr(note1)
@@ -27,7 +19,7 @@ def test_note_repr(note1):
     )
 
 
-def test_add_single_note(empty_deck):
+def test_add_one_note(empty_deck):
     # given
     note = Note(guid="fake", front="Test Front", back="Test Back")
 
@@ -91,6 +83,14 @@ def test_retrieve_slice_from_deck(note1, note2, deck):
 
     # then
     assert result == [note1, note2]
+
+
+def test_read_from_fake_file(empty_deck, test_file):
+    # when
+    empty_deck.read_txt(test_file)
+
+    # then
+    assert len(empty_deck) > 0
 
 
 def test_read_txt_with_invalid_separator(empty_deck, tmp_path):
