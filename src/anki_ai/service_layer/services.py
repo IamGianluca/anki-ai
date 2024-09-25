@@ -8,7 +8,7 @@ from loguru import logger
 from openai import APIConnectionError
 from tqdm import tqdm
 
-from anki_ai.adapters.chat_completion import ChatCompletionService, get_chat_completion
+from anki_ai.adapters.chat_completion import ChatCompletionsService, get_chat_completion
 from anki_ai.domain.model import Deck, Note, NoteChanges
 
 
@@ -32,7 +32,7 @@ def format_deck(in_path: Path, out_path: Path) -> None:
     deck.write_txt(out_path)
 
 
-def format_note(note: Note, chat: ChatCompletionService) -> Note:
+def format_note(note: Note, chat: ChatCompletionsService) -> Note:
     # TODO: check if stripping tags is actually compromising performance
     user_msg = f"""Front: {strip_tags(note.front)}\nBack: {strip_tags(note.back)}"""
 

@@ -6,12 +6,12 @@ from openai.types.chat.chat_completion import ChatCompletion, Choice
 from openai.types.chat.chat_completion_message import ChatCompletionMessage
 
 
-class ChatCompletionService(Protocol):
+class ChatCompletionsService(Protocol):
     def create(self, *args: Any, **kwargs: Any) -> Any:
         pass
 
 
-class FakeChatCompletion:
+class FakeCompletions:
     def create(self, model, messages, temperature=0.7, max_tokens=150, *args, **kwargs):
         fake_note = {
             "front": "This is the front of the card",
@@ -36,9 +36,9 @@ class FakeChatCompletion:
         )
 
 
-def get_chat_completion(nullable=False) -> ChatCompletionService:
+def get_chat_completion(nullable=False) -> ChatCompletionsService:
     if nullable:
-        return FakeChatCompletion()
+        return FakeCompletions()
     else:
         client = get_vllm_client()
         return client.chat.completions
