@@ -1,6 +1,5 @@
 # Todo 
 
-
 ### Milestore 1: Format notes using LLMs
 - [ ] Create eval dataset to measure LLM judge performance
 - [ ] Get LLM judge performance above 90% accuracy
