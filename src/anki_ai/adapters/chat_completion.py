@@ -1,8 +1,9 @@
 import json
-from types import SimpleNamespace
 from typing import Any, Protocol
 
 from openai import OpenAI
+from openai.types.chat.chat_completion import ChatCompletion, Choice
+from openai.types.chat.chat_completion_message import ChatCompletionMessage
 
 
 class ChatCompletionService(Protocol):
@@ -20,30 +21,27 @@ class FakeChatCompletion:
 
         response = json.dumps(fake_note)
 
-        return SimpleNamespace(
-            id="chatcmpl-123",
-            object="chat.completion",
-            created=1684888617,
-            model=model,
+        return ChatCompletion(
+            id="chat-123",
+            created=12523424,
+            model="mymodel",
             choices=[
-                SimpleNamespace(
+                Choice(
                     index=0,
-                    message=SimpleNamespace(
-                        role="assistant",
-                        content=response,
-                    ),
+                    message=ChatCompletionMessage(role="assistant", content=response),
                     finish_reason="stop",
                 )
             ],
-            usage=SimpleNamespace(
-                prompt_tokens=9, completion_tokens=12, total_tokens=21
-            ),
+            object="chat.completion",
         )
 
 
-def get_chat_completion() -> ChatCompletionService:
-    client = get_vllm_client()
-    return client.chat.completions
+def get_chat_completion(nullable=False) -> ChatCompletionService:
+    if nullable:
+        return FakeChatCompletion()
+    else:
+        client = get_vllm_client()
+        return client.chat.completions
 
 
 def get_vllm_client() -> OpenAI:
