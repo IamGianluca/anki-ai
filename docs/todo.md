@@ -14,6 +14,7 @@
 ```
 
 ### Continuous Integration
+- [ ] Enable integration and e2e tests in CI
 - [ ] Start vLLM server during CI build (this is currently causing CI failures)
 
 ### Performance

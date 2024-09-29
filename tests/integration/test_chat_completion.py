@@ -42,6 +42,7 @@ def vllm_server():
     process.join()
 
 
+@pytest.mark.slow
 def test_vllm_server_chat_completions(vllm_server):
     # given
     url = "http://localhost:8000/v1/chat/completions"
@@ -68,6 +69,7 @@ def test_vllm_server_chat_completions(vllm_server):
     assert response.status_code == 200
 
 
+@pytest.mark.slow
 @pytest.mark.parametrize("nullable", [True, False])
 def test_chat_completion(nullable, vllm_server):
     # given

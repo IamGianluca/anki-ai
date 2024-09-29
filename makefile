@@ -3,6 +3,9 @@ install:
 	uv pip install -e . 
 
 test:
+	pytest . -m "not slow" --ignore=tests/integration/ --durations=5 --cov=src/anki_ai/ --cov-report term-missing -vv
+
+test_slow:
 	pytest . --durations=5 --cov=src/anki_ai/ --cov-report term-missing -vv
 
 check: format lint
