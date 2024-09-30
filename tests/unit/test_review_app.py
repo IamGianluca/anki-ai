@@ -1,3 +1,5 @@
+import pytest
+
 from anki_ai.entrypoints.review_notes_changes import ReviewApp
 
 
@@ -18,15 +20,15 @@ def test_add_deck_to_review_app(deck):
     assert ra.deck == deck
 
 
-def test_review_one_note(deck):
+@pytest.mark.parametrize("inputs,n_reviews", [(["Y"], 1), (["Y", "N"], 2)])
+def test_review_one_or_more_notes(deck, inputs, n_reviews):
     # given
-    inputs = ["Y"]
     fake_input = FakeInputProvider(inputs)
     ra = ReviewApp(deck, input_provider=fake_input)
     assert ra.n_reviewed() == 0
 
     # when
-    ra.review(n_reviews=1)
+    ra.review(n_reviews=n_reviews)
 
     # then
-    assert ra.n_reviewed() == 1
+    assert ra.n_reviewed() == n_reviews
