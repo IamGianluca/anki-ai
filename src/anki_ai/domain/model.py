@@ -1,3 +1,4 @@
+import random
 from collections.abc import Generator
 from pathlib import Path
 from typing import Any, List, Optional
@@ -151,6 +152,9 @@ class Deck:
             tags = " ".join(note.tags)
             out += f"{tags}"
         f.write(f"{out}\n")
+
+    def shuffle(self) -> None:
+        random.shuffle(self.__collection)
 
 
 sep2symbol = {"tab": "\t"}

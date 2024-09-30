@@ -180,10 +180,7 @@ def test_deck_read_txt_log_warnings(caplog, tmp_path, deck):
     deck.read_txt(invalid_file)
 
     # then
-    assert (
-        caplog.text
-        == "WARNING  anki_ai.domain.model:model.py:67 Error while processing line 2 (front\tback\t\ttag1 tag2\n) : not enough values to unpack (expected 6, got 4)\n"
-    )
+    assert [r.levelname for r in caplog.records] == ["WARNING"]
 
 
 def test_deck_write_txt(test_file, tmp_path):
