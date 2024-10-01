@@ -31,13 +31,13 @@ class ReviewApp:
         # https://www.jamesshore.com/v2/projects/nullables/testing-without-mocks
         self.input_provider = input_provider
         self.output_provider = output_provider
-        self.__reviews: list = []
+        self.__reviews: dict = {}
 
     def n_reviewed(self) -> int:
         return len(self.__reviews)
 
     def review(self, n_reviews: int = 10):
-        self.__reviews = []
+        self.__reviews = {}
         for i, note in enumerate(self.deck[:n_reviews]):
             self.output_provider(f"\nCard {i+1} of {len(self.deck)}")
             self.output_provider(
@@ -52,9 +52,9 @@ class ReviewApp:
                 break
             elif response is None:
                 self.output_provider("Skipping this card.")
-                self.__reviews.append(None)
+                self.__reviews[note.guid] = None
             else:
-                self.__reviews.append([note.guid, response])
+                self.__reviews[note.guid] = response
 
             self.output_provider("\n")
 
@@ -76,8 +76,7 @@ class ReviewApp:
 
     def save(self, fpath: Path):
         with open(fpath, "w") as f:
-            for review in self.__reviews:
-                guid, score = review
+            for guid, score in self.__reviews.items():
                 f.write(f"{guid}\t{score}\n")
         self.output_provider(f"Progress saved in file `{fpath}`.")
 
@@ -85,7 +84,7 @@ class ReviewApp:
         with open(fpath, "r") as f:
             for line in f.readlines():
                 guid, score = line.split("\t")
-                self.__reviews.append([guid, score])
+                self.__reviews[guid] = score
 
 
 if __name__ == "__main__":

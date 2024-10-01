@@ -65,3 +65,36 @@ def test_load_reviewapp_state(tmp_path, deck):
 
     # then
     assert ra.n_reviewed() == 2
+
+
+def test_reviewapp_collision(tmp_path, deck):
+    # given
+    fpath = tmp_path / "out.txt"
+    inputs = ["Y", "N"]
+    fake_input = FakeInputProvider(inputs)
+    ra = ReviewApp(deck, input_provider=fake_input)
+    ra.review(n_reviews=2)
+
+    assert ra.n_reviewed() == 2
+
+    ra.save(fpath=fpath)
+
+    # when
+    ra.load(fpath)
+
+    # then
+    assert ra.n_reviewed() == 2
+
+    # given
+    fpath = tmp_path / "in.txt"
+    fpath.write_text("first\tTrue\nsecond\tFalse\n")
+    ra = ReviewApp(deck)
+
+    # then
+    assert ra.n_reviewed() == 0
+
+    # when
+    ra.load(fpath)
+
+    # then
+    assert ra.n_reviewed() == 2
