@@ -59,7 +59,7 @@ class ReviewApp:
                 self.output_provider("Skipping this card.")
                 self.__reviews.append(None)
             else:
-                self.__reviews.append(response)
+                self.__reviews.append([note.guid, response])
 
             self.output_provider("\n")
 
@@ -80,16 +80,13 @@ class ReviewApp:
                 )
 
     def save(self, fpath: Path):
-        pass
+        with open(fpath, "w") as f:
+            for review in self.__reviews:
+                guid, score = review
+                f.write(f"{guid}\t{score}\n")
 
     def load(self, fpath: Path):
         pass
-
-    def accuracy(self):
-        if len(self.deck) == len(self.__reviews):
-            print(f"Accuracy: {sum(self.__reviews) / len(self.__reviews):.2%}")
-        else:
-            print("Dataset not fully annotated. Can't compute accuracy yet.")
 
 
 if __name__ == "__main__":
