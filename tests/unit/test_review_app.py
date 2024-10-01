@@ -36,7 +36,7 @@ def test_review_one_or_more_notes(deck, inputs, n_reviews):
     assert ra.n_reviewed() == n_reviews
 
 
-def test_save_reviews(tmp_path, deck):
+def test_save_reviewapp_state(tmp_path, deck):
     # given
     fpath = tmp_path / "out.txt"
     inputs = ["Y", "N"]
@@ -48,5 +48,20 @@ def test_save_reviews(tmp_path, deck):
     ra.save(fpath=fpath)
 
     # then
-    assert fpath.exists()
     assert fpath.read_text() == "first\tTrue\nsecond\tFalse\n"
+
+
+def test_load_reviewapp_state(tmp_path, deck):
+    # given
+    fpath = tmp_path / "in.txt"
+    fpath.write_text("first\tTrue\nsecond\tFalse\n")
+    ra = ReviewApp(deck)
+
+    # then
+    assert ra.n_reviewed() == 0
+
+    # when
+    ra.load(fpath)
+
+    # then
+    assert ra.n_reviewed() == 2

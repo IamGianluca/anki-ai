@@ -9,7 +9,20 @@ from vllm.entrypoints.openai.protocol import ChatCompletionRequest
 from vllm.entrypoints.openai.serving_chat import OpenAIServingChat
 
 
+def run_server():
+    app = FastAPI()
+    chat = serving_chat()
+
+    @app.post("/v1/chat/completions")
+    async def chat_completions(request: ChatCompletionRequest):
+        return await chat.create_chat_completion(request)
+
+    uvicorn.run(app, host="0.0.0.0", port=8000)
+
+
 def serving_chat():
+    # TODO: Pass model, chat_template, etc. as parameters. This will enable using
+    # a smaller LLM in the test suite
     model = "meta-llama/Meta-Llama-3.1-8B-Instruct"
     max_model_len = 4_096
     chat_template = "./template_llama31.jinja"
@@ -29,17 +42,6 @@ def serving_chat():
     )
 
     return serving_chat
-
-
-def run_server():
-    app = FastAPI()
-    chat = serving_chat()
-
-    @app.post("/v1/chat/completions")
-    async def chat_completions(request: ChatCompletionRequest):
-        return await chat.create_chat_completion(request)
-
-    uvicorn.run(app, host="0.0.0.0", port=8000)
 
 
 if __name__ == "__main__":
