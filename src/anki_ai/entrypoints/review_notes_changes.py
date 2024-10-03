@@ -3,7 +3,7 @@ capabilities of a LLM judge.
 """
 
 from pathlib import Path
-from typing import Callable
+from typing import Callable, Literal
 
 import fire
 
@@ -27,9 +27,6 @@ class ReviewApp:
         output_provider: Callable[[str], None] = print,
     ):
         self.deck = deck
-        # NOTE: This is unconventional in Python. Here is a great article by
-        # James Shore to learn about the benefits of this approach:
-        # https://www.jamesshore.com/v2/projects/nullables/testing-without-mocks
         self.input_provider = input_provider
         self.output_provider = output_provider
         self.__reviews: dict = {}
@@ -37,7 +34,7 @@ class ReviewApp:
     def n_reviewed(self) -> int:
         return len(self.__reviews)
 
-    def review(self, n_reviews: int = 25):
+    def review(self, n_reviews: int = 25) -> None:
         self.__reviews = {}
         for i, note in enumerate(self.deck[:n_reviews]):
             self.output_provider(f"\nCard {i+1} of {len(self.deck)}")
@@ -59,7 +56,8 @@ class ReviewApp:
 
             self.output_provider("\n")
 
-    def _get_boolean_input(self, prompt):
+    # TODO: refactor to return either a bool or raise an exception
+    def _get_boolean_input(self, prompt) -> bool | Literal["quit"] | None:
         while True:
             response = self.input_provider(prompt).strip().lower()
             if response in ("y", "yes", "true", "1"):
@@ -75,13 +73,13 @@ class ReviewApp:
                     "Invalid input. Please enter Y (Yes), N (No), S (Skip), or Q (Quit)."
                 )
 
-    def save(self, fpath: Path):
+    def save(self, fpath: Path) -> None:
         with open(fpath, "w") as f:
             for guid, score in self.__reviews.items():
                 f.write(f"{guid}\t{score}\n")
         self.output_provider(f"Progress saved in file `{fpath}`.")
 
-    def load(self, fpath: Path):
+    def load(self, fpath: Path) -> None:
         with open(fpath, "r") as f:
             for line in f.readlines():
                 guid, score = line.split("\t")
