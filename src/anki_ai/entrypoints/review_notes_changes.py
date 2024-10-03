@@ -13,6 +13,7 @@ from anki_ai.domain.model import Deck
 def review_notes(in_fpath: Path, out_fpath: Path):
     deck = Deck("edited")
     deck.read_txt(Path(in_fpath))
+    deck.shuffle()
     ra = ReviewApp(deck)
     ra.review()
     ra.save(out_fpath)
@@ -36,7 +37,7 @@ class ReviewApp:
     def n_reviewed(self) -> int:
         return len(self.__reviews)
 
-    def review(self, n_reviews: int = 10):
+    def review(self, n_reviews: int = 25):
         self.__reviews = {}
         for i, note in enumerate(self.deck[:n_reviews]):
             self.output_provider(f"\nCard {i+1} of {len(self.deck)}")
