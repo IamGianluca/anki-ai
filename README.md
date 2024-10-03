@@ -9,6 +9,7 @@ Some of the features `anki-ai` offers:
 - [ ] Suggest when a note should be split into multiple atomic notes
 - [ ] Create new notes from a text file or pdf
 - [ ] Identify missing tags
+- [ ] Suggest better tags
 - [ ] Fact-check notes, to ensure there are no factual mistakes
 - [ ] Suggest how existing notes could be improved, e.g., decompose a note into multiple atomic notes, creating reverse cards, adding mnemonic, etc.
 
