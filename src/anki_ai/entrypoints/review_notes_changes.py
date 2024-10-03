@@ -36,8 +36,9 @@ class ReviewApp:
 
     def review(self, n_reviews: int = 25) -> None:
         self.__reviews = {}
+
         for i, note in enumerate(self.deck[:n_reviews]):
-            self.output_provider(f"\nCard {i+1} of {len(self.deck)}")
+            self.output_provider(f"\nCard {i+1} of {n_reviews}")
             self.output_provider(
                 f"Front: {note.front}\nBack: {note.back}\nTags: {note.tags}\n"
             )
