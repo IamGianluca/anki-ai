@@ -10,11 +10,15 @@ import fire
 from anki_ai.domain.model import Deck
 
 
-def review_notes(in_fpath: Path, out_fpath: Path):
-    deck = Deck("edited")
-    deck.read_txt(Path(in_fpath))
-    deck.shuffle()
-    ra = ReviewApp(deck)
+def review_notes(old_fpath: Path, new_fpath: Path, out_fpath: Path):
+    old_deck = Deck("original")
+    old_deck.read_txt(Path(old_fpath))
+
+    new_deck = Deck("edited")
+    new_deck.read_txt(Path(new_fpath))
+    new_deck.shuffle()
+
+    ra = ReviewApp(old_deck=old_deck, new_deck=new_deck)
     ra.review()
     ra.save(out_fpath)
 
@@ -22,11 +26,13 @@ def review_notes(in_fpath: Path, out_fpath: Path):
 class ReviewApp:
     def __init__(
         self,
-        deck: Deck,
+        old_deck: Deck,
+        new_deck: Deck,
         input_provider: Callable[[str], str] = input,
         output_provider: Callable[[str], None] = print,
     ):
-        self.deck = deck
+        self.__old_deck = old_deck
+        self.__new_deck = new_deck
         self.input_provider = input_provider
         self.output_provider = output_provider
         self.__reviews: dict = {}
@@ -37,8 +43,13 @@ class ReviewApp:
     def review(self, n_reviews: int = 25) -> None:
         self.__reviews = {}
 
-        for i, note in enumerate(self.deck[:n_reviews]):
+        for i, note in enumerate(self.__new_deck[:n_reviews]):
             self.output_provider(f"\nCard {i+1} of {n_reviews}")
+
+            orig = self.__old_deck.get(note.guid)[0]
+            self.output_provider(
+                f"Front: {orig.front}\nBack: {orig.back}\nTags: {orig.tags}\n"
+            )
             self.output_provider(
                 f"Front: {note.front}\nBack: {note.back}\nTags: {note.tags}\n"
             )
