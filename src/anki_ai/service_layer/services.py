@@ -1,3 +1,4 @@
+from copy import deepcopy
 from html.parser import HTMLParser
 from io import StringIO
 from pathlib import Path
@@ -54,9 +55,11 @@ def format_note(note: Note, chat: ChatCompletionsService) -> Note:
     )
     json_data: str = cast(str, chat_response.choices[0].message.content)
     suggested_changes = NoteChanges.model_validate_json(json_data)
-    note.front = suggested_changes.front
-    note.back = suggested_changes.back
-    return note
+
+    new_note = deepcopy(note)
+    new_note.front = suggested_changes.front
+    new_note.back = suggested_changes.back
+    return new_note
 
 
 def strip_tags(html):

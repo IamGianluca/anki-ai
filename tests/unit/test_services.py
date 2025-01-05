@@ -12,3 +12,15 @@ def test_format_note(note1):
 
     # Then
     assert isinstance(result, Note)
+
+
+def test_format_note_does_not_overwrite_original_object(note1):
+    # Given
+    chat = get_chat_completion(nullable=True)
+
+    # When
+    result = format_note(note1, chat)
+
+    # Then
+    assert result.guid == note1.guid
+    assert result != note1
