@@ -155,7 +155,8 @@ class Deck:
             out += f"{tags}"
         f.write(f"{out}\n")
 
-    def shuffle(self) -> None:
+    def shuffle(self, seed: int = 42) -> None:
+        random.seed(seed)
         random.shuffle(self.__collection)
 
 

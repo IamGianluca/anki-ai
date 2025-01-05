@@ -223,3 +223,13 @@ def test_update_note_in_deck():
     # Then
     assert len(deck) == 1
     assert deck.get(guid="guid") == [new_note]
+
+
+def test_shuffle_deck_is_deterministic(deck):
+    """This unit test should fail from time to time if the seed is not fixed."""
+    # When
+    deck.shuffle()
+
+    # Then
+    new_order = [n.guid for n in deck]
+    assert ["second", "first"] == new_order
