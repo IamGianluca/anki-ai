@@ -8,10 +8,10 @@ TEST_DATA_FILE_FPATH = "./tests/data/test_data.txt"
 
 
 def test_note_repr(note1):
-    # when
+    # When
     result = repr(note1)
 
-    # then
+    # Then
     guid, front, back, tags = note1.guid, note1.front, note1.back, note1.tags
     assert (
         result
@@ -20,85 +20,85 @@ def test_note_repr(note1):
 
 
 def test_add_one_note(empty_deck):
-    # given
+    # Given
     note = Note(guid="fake", front="Test Front", back="Test Back")
 
-    # when
+    # When
     empty_deck.add([note])
 
-    # then
+    # Then
     assert len(empty_deck) == 1
     assert empty_deck[0] == note
 
 
 def test_add_multiple_notes(empty_deck, note1, note2, note3):
-    # given
+    # Given
     notes = [
         note1,
         note2,
         note3,
     ]
 
-    # when
+    # When
     empty_deck.add(notes)
 
-    # then
+    # Then
     assert len(empty_deck) == 3
     assert empty_deck[:] == notes
 
 
 def test_deck_length(deck):
-    # when
+    # When
     result = len(deck)
 
-    # then
+    # Then
     assert result == 2
 
 
 def test_retrieve_element_from_deck(note1, deck):
-    # when
+    # When
     result = deck[0]
 
-    # then
+    # Then
     assert result == note1
 
 
 def test_retrieve_note_from_deck_by_guid():
-    # given
+    # Given
     deck = Deck()
     note = Note(guid="teuha", front="front", back="back")
     another_note = Note(guid="etuha234241ueuo", front="front", back="back")
     deck.add([another_note, note])
 
-    # when
+    # When
     result = deck.get(guid="teuha")
 
-    # then
+    # Then
     assert [note] == result
 
 
 def test_retrieve_slice_from_deck(note1, note2, deck):
-    # when
+    # When
     result = deck[:2]
 
-    # then
+    # Then
     assert result == [note1, note2]
 
 
 def test_read_from_fake_file(empty_deck, test_file):
-    # when
+    # When
     empty_deck.read_txt(test_file)
 
-    # then
+    # Then
     assert len(empty_deck) > 0
 
 
 def test_read_txt_with_invalid_separator(empty_deck, tmp_path):
-    # given
+    # Given
     invalid_file = tmp_path / "invalid_separator.txt"
     invalid_file.write_text("#separator:comma\nfront,back,tags\n")
 
-    # when / then
+    # When / then
     with pytest.raises(
         NotImplementedError, match="Only tab-separated files are supported"
     ):
@@ -106,24 +106,24 @@ def test_read_txt_with_invalid_separator(empty_deck, tmp_path):
 
 
 def test_deck_iterable(deck):
-    # when
+    # When
     result = [note for note in deck]
 
-    # then
+    # Then
     assert len(result) == 2
 
 
 def test_read_txt_with_html_true(empty_deck, tmp_path):
-    # given
+    # Given
     html_file = tmp_path / "html_true.txt"
     html_file.write_text(
         "#separator:tab\n#html:true\n#guid column:1\n#notetype column:2\n#deck column:3\n#tags column:6\nMm+g*FhiWM\tKaTeX and Markdown Basic\tDefault\t<b>front</b>\t<i>back</i>\t\t\t\ttag1 tag2\n"
     )
 
-    # when
+    # When
     empty_deck.read_txt(html_file)
 
-    # then
+    # Then
     assert len(empty_deck) == 1
     note = empty_deck[0]
     assert note.front == "<b>front</b>"
@@ -132,16 +132,16 @@ def test_read_txt_with_html_true(empty_deck, tmp_path):
 
 
 def test_read_txt_with_html_false(empty_deck, tmp_path):
-    # given
+    # Given
     html_file = tmp_path / "html_false.txt"
     html_file.write_text(
         "#separator:tab\n#html:false\n#guid column:1\n#notetype column:2\n#deck column:3\n#tags column:6\nMm+g*FhiWM\tKaTeX and Markdown Basic\tDefault\tfront\tback\t\t\t\ttag1 tag2\n"
     )
 
-    # when
+    # When
     empty_deck.read_txt(html_file)
 
-    # then
+    # Then
     assert len(empty_deck) == 1
     note = empty_deck[0]
     assert note.front == "front"
@@ -150,19 +150,19 @@ def test_read_txt_with_html_false(empty_deck, tmp_path):
 
 
 def test_deck_read_txt_more_fields(deck):
-    # given
+    # Given
     assert len(deck) == 2
 
-    # when
+    # When
     deck.read_txt(TEST_DATA_FILE_FPATH)
 
-    # then
+    # Then
     assert len(deck) == 10
 
-    # when
+    # When
     result = deck[4]
 
-    # then
+    # Then
     assert result.guid == "Azd65{j+,q"
     assert result.notetype == "KaTeX and Markdown Basic"
     assert result.deck_name == "Default"
@@ -172,40 +172,40 @@ def test_deck_read_txt_more_fields(deck):
 
 
 def test_deck_read_txt_log_warnings(caplog, tmp_path, deck):
-    # given
-    invalid_file = tmp_path / "invalid_file.txt"  # missing two tabs before tags
+    # Given
+    invalid_file = tmp_path / "invalid_file.txt"  # Missing two tabs before tags
     invalid_file.write_text("#separator:tab\n#html:false\nfront\tback\t\ttag1 tag2\n")
 
-    # when
+    # When
     deck.read_txt(invalid_file)
 
-    # then
+    # Then
     assert [r.levelname for r in caplog.records] == ["WARNING"]
 
 
 def test_deck_write_txt(test_file, tmp_path):
-    # given
+    # Given
     deck = Deck("Default")
     deck.read_txt(test_file)
 
-    # when
+    # When
     out_fpath = tmp_path / "new.txt"
     deck.write_txt(out_fpath)
 
-    # then
+    # Then
     assert filecmp.cmp(test_file, out_fpath)
 
 
 def test_update_note_in_deck():
-    # given
+    # Given
     note = Note(guid="guid", front="front", back="back")
     deck = Deck()
     deck.add([note])
 
-    # when
+    # When
     new_note = Note(guid="guid", front="new front", back="new back")
     deck.update(guid="guid", changes=new_note)
 
-    # then
+    # Then
     assert len(deck) == 1
     assert deck.get(guid="guid") == [new_note]

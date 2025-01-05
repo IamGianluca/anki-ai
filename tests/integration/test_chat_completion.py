@@ -44,7 +44,7 @@ def vllm_server():
 
 @pytest.mark.slow
 def test_vllm_server_chat_completions(vllm_server):
-    # given
+    # Given
     url = "http://localhost:8000/v1/chat/completions"
     request_data = {
         "model": "llama-3b",
@@ -62,17 +62,17 @@ def test_vllm_server_chat_completions(vllm_server):
         "stop": None,
     }
 
-    # when
+    # When
     response = requests.post(url, json=request_data)
 
-    # then
+    # Then
     assert response.status_code == 200
 
 
 @pytest.mark.slow
 @pytest.mark.parametrize("nullable", [True, False])
 def test_chat_completion(nullable, vllm_server):
-    # given
+    # Given
     chat = get_chat_completion(nullable=nullable)
     model = "meta-llama/Meta-Llama-3.1-8B-Instruct"
     messages = [
@@ -80,13 +80,13 @@ def test_chat_completion(nullable, vllm_server):
         {"role": "user", "content": "Hello"},
     ]
 
-    # when
+    # When
     result = chat.create(
         model=model,
         messages=messages,  # type: ignore
         temperature=0,
     )
 
-    # then
+    # Then
     assert isinstance(result, ChatCompletion)
     assert isinstance(result.choices[0].message.content, str)

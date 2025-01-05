@@ -16,51 +16,51 @@ class FakeInputProvider:
 
 @pytest.mark.parametrize("inputs,n_reviews", [(["Y"], 1), (["Y", "N"], 2)])
 def test_review_one_or_more_notes(deck, inputs, n_reviews):
-    # given
+    # Given
     fake_input = FakeInputProvider(inputs)
     ra = ReviewApp(deck, deck, input_provider=fake_input)
     assert ra.n_reviewed() == 0
 
-    # when
+    # When
     ra.review(n_reviews=n_reviews)
 
-    # then
+    # Then
     assert ra.n_reviewed() == n_reviews
 
 
 def test_save_reviewapp_state(tmp_path, deck):
-    # given
+    # Given
     fpath = tmp_path / "out.txt"
     inputs = ["Y", "N"]
     fake_input = FakeInputProvider(inputs)
     ra = ReviewApp(deck, deck, input_provider=fake_input)
     ra.review(n_reviews=2)
 
-    # when
+    # When
     ra.save(fpath=fpath)
 
-    # then
+    # Then
     assert fpath.read_text() == "first\tTrue\nsecond\tFalse\n"
 
 
 def test_load_reviewapp_state(tmp_path, deck):
-    # given
+    # Given
     fpath = tmp_path / "in.txt"
     fpath.write_text("first\tTrue\nsecond\tFalse\n")
     ra = ReviewApp(deck, deck)
 
-    # then
+    # Then
     assert ra.n_reviewed() == 0
 
-    # when
+    # When
     ra.load(fpath)
 
-    # then
+    # Then
     assert ra.n_reviewed() == 2
 
 
 def test_reviewapp_collision(tmp_path, deck):
-    # given
+    # Given
     fpath = tmp_path / "out.txt"
     inputs = ["Y", "N"]
     fake_input = FakeInputProvider(inputs)
@@ -71,22 +71,22 @@ def test_reviewapp_collision(tmp_path, deck):
 
     ra.save(fpath=fpath)
 
-    # when
+    # When
     ra.load(fpath)
 
-    # then
+    # Then
     assert ra.n_reviewed() == 2
 
-    # given
+    # Given
     fpath = tmp_path / "in.txt"
     fpath.write_text("first\tTrue\nsecond\tFalse\n")
     ra = ReviewApp(deck, deck)
 
-    # then
+    # Then
     assert ra.n_reviewed() == 0
 
-    # when
+    # When
     ra.load(fpath)
 
-    # then
+    # Then
     assert ra.n_reviewed() == 2
