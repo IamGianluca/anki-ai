@@ -55,7 +55,7 @@ class Deck:
         note.back = changes.back
         logger.info(f"Updated note: {note}")
 
-    def read_txt(self, fpath: Path) -> None:
+    def read_txt(self, fpath: Path, exclude_tags: List[str] = []) -> None:
         with open(fpath) as f:
             for i, line in enumerate(f):
                 if line.startswith("#"):
@@ -63,6 +63,8 @@ class Deck:
                 else:
                     try:
                         attrs = self._process_line(line)
+                        if bool(set(attrs["tags"]) & set(exclude_tags)):
+                            continue
                         self.__collection.append(Note(**attrs))
                     except ValueError as e:
                         logger.warning(

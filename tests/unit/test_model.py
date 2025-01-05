@@ -90,7 +90,21 @@ def test_read_from_fake_file(empty_deck, test_file):
     empty_deck.read_txt(test_file)
 
     # Then
-    assert len(empty_deck) > 0
+    assert len(empty_deck) == 1
+
+
+def test_read_txt_exclude_certain_tags(tmp_path, empty_deck):
+    # Given
+    tmp_file = tmp_path / "file.txt"
+    tmp_file.write_text(
+        "#separator:tab\n#html:true\n#guid column:1\n#notetype column:2\n#deck column:3\n#tags column:6\nMm+g*FhiWM\tKaTeX and Markdown Basic\tDefault\t<b>front</b>\t<i>back</i>\t\t\t\ttag1 tag2\nMm99999+g*FhiWM\tKaTeX and Markdown Basic\tDefault\t<b>front</b>\t<i>back</i>\t\t\t\ttag3 tag2\n"
+    )
+
+    # Wnen
+    empty_deck.read_txt(tmp_file, exclude_tags=["tag3"])
+
+    # Then
+    assert len(empty_deck) == 1
 
 
 def test_read_txt_with_invalid_separator(empty_deck, tmp_path):
