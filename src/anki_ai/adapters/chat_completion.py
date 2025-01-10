@@ -36,6 +36,14 @@ class FakeCompletions:
         )
 
 
+def get_completion(nullable=False):
+    if nullable:
+        return None
+    else:
+        client = get_vllm_client()
+        return client.completions
+
+
 def get_chat_completion(nullable=False) -> ChatCompletionsService:
     if nullable:
         return FakeCompletions()
