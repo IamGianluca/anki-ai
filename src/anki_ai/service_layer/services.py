@@ -34,8 +34,9 @@ def format_deck(in_path: Path, out_path: Path) -> None:
 
 
 def format_note(note: Note, chat: ChatCompletionsService) -> Note:
-    # TODO: check if stripping tags is actually compromising performance
-    user_msg = f"""Front: {strip_tags(note.front)}\nBack: {strip_tags(note.back)}"""
+    user_msg = (
+        f"""Front: {strip_html_tags(note.front)}\nBack: {strip_html_tags(note.back)}"""
+    )
 
     messages = [
         {"role": "system", "content": SYSTEM_MSG},
@@ -62,7 +63,7 @@ def format_note(note: Note, chat: ChatCompletionsService) -> Note:
     return new_note
 
 
-def strip_tags(html):
+def strip_html_tags(html):
     s = HTMLStripper()
     s.feed(replace_br_with_newline(html))
     return s.get_data()
