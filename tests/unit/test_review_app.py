@@ -1,6 +1,6 @@
 import pytest
 
-from anki_ai.entrypoints.review_notes_changes import ReviewApp
+from anki_ai.entrypoints.review_note_changes import ReviewApp
 
 
 class FakeInputProvider:

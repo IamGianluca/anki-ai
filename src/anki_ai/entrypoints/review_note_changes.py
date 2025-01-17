@@ -1,7 +1,3 @@
-"""This entrypoint is to annotate notes that we can later use to evaluate the
-capabilities of a LLM judge.
-"""
-
 from pathlib import Path
 from typing import Callable, Literal
 
@@ -10,7 +6,10 @@ import fire
 from anki_ai.domain.model import Deck
 
 
-def review_notes(old_fpath: Path, new_fpath: Path, out_fpath: Path):
+def review_notes_changes(old_fpath: Path, new_fpath: Path, out_fpath: Path):
+    """Annotate notes that we can later be used to evaluate the capabilities
+    of a LLM judge.
+    """
     old_deck = Deck("original")
     old_deck.read_txt(Path(old_fpath))
 
@@ -44,7 +43,7 @@ class ReviewApp:
         self.__reviews = {}
 
         for i, note in enumerate(self.__new_deck[:n_reviews]):
-            self.output_provider(f"\nCard {i+1} of {n_reviews}")
+            self.output_provider(f"\nCard {i + 1} of {n_reviews}")
 
             orig = self.__old_deck.get(note.guid)[0]
             self.output_provider(
@@ -99,4 +98,4 @@ class ReviewApp:
 
 
 if __name__ == "__main__":
-    fire.Fire(review_notes)
+    fire.Fire(review_notes_changes)
