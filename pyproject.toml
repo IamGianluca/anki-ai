@@ -44,6 +44,9 @@ norecursedirs = [
     "build",
     "dist",
 ]
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+]
 
 [tool.ruff]
 src = ["src"]
