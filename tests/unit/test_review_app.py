@@ -1,7 +1,7 @@
 import pytest
 
 from anki_ai.adapters.chat_completion import get_chat_completion
-from anki_ai.entrypoints.review_note_changes import ReviewApp
+from anki_ai.entrypoints.format_notes import ReviewApp
 
 
 class FakeInputProvider:
@@ -34,8 +34,10 @@ def test_save_reviewapp_state(tmp_path, deck):
     # Given
     fpath = tmp_path / "out.txt"
     inputs = ["Y", "N"]
+
     fake_input = FakeInputProvider(inputs)
     fake_llm = get_chat_completion(nullable=True)
+
     ra = ReviewApp(deck, llm=fake_llm, input_provider=fake_input)
     ra.review(n_reviews=2)
 
