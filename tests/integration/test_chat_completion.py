@@ -5,7 +5,7 @@ import pytest
 import requests
 from openai.types.chat.chat_completion import ChatCompletion
 
-from anki_ai.adapters.chat_completion import get_chat_completion
+from anki_ai.adapters.chat_completion import FakeChatCompletion, get_chat_completion
 from anki_ai.entrypoints.api_server import run_server
 
 
@@ -47,7 +47,7 @@ def test_vllm_server_chat_completions(vllm_server):
     # Given
     url = "http://localhost:8000/v1/chat/completions"
     request_data = {
-        "model": "llama-3b",
+        "model": "meta-llama/Meta-Llama-3.1-8B-Instruct",
         "messages": [
             {
                 "role": "user",
@@ -88,5 +88,5 @@ def test_chat_completion(nullable, vllm_server):
     )
 
     # Then
-    assert isinstance(result, ChatCompletion)
+    assert isinstance(result, (ChatCompletion, FakeChatCompletion))
     assert isinstance(result.choices[0].message.content, str)

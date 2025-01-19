@@ -3,21 +3,21 @@ from typing import Callable, Literal
 
 import fire
 
+from anki_ai.adapters.chat_completion import ChatCompletionsService
 from anki_ai.domain.model import Deck
+from anki_ai.service_layer.services import format_note, get_chat_completion
 
 
 def review_notes_changes(old_fpath: Path, new_fpath: Path, out_fpath: Path):
     """Annotate notes that we can later be used to evaluate the capabilities
     of a LLM judge.
     """
-    old_deck = Deck("original")
-    old_deck.read_txt(Path(old_fpath))
+    deck = Deck("original")
+    deck.read_txt(Path(old_fpath))
 
-    new_deck = Deck("edited")
-    new_deck.read_txt(Path(new_fpath))
-    new_deck.shuffle()
+    llm = get_chat_completion()
 
-    ra = ReviewApp(old_deck=old_deck, new_deck=new_deck)
+    ra = ReviewApp(deck=deck, llm=llm)
     ra.review()
     ra.save(out_fpath)
 
@@ -25,13 +25,13 @@ def review_notes_changes(old_fpath: Path, new_fpath: Path, out_fpath: Path):
 class ReviewApp:
     def __init__(
         self,
-        old_deck: Deck,
-        new_deck: Deck,
+        deck: Deck,
+        llm: ChatCompletionsService,
         input_provider: Callable[[str], str] = input,
         output_provider: Callable[[str], None] = print,
     ):
-        self.__old_deck = old_deck
-        self.__new_deck = new_deck
+        self.__deck = deck
+        self.__llm = llm
         self.input_provider = input_provider
         self.output_provider = output_provider
         self.__reviews: dict = {}
@@ -42,19 +42,20 @@ class ReviewApp:
     def review(self, n_reviews: int = 25) -> None:
         self.__reviews = {}
 
-        for i, note in enumerate(self.__new_deck[:n_reviews]):
+        for i, note in enumerate(self.__deck[:n_reviews]):
             self.output_provider(f"\nCard {i + 1} of {n_reviews}")
 
-            orig = self.__old_deck.get(note.guid)[0]
+            orig = self.__deck.get(note.guid)[0]
             self.output_provider(
                 f"Front: {orig.front}\nBack: {orig.back}\nTags: {orig.tags}\n"
             )
+            proposed_note = format_note(note, self.__llm)
             self.output_provider(
-                f"Front: {note.front}\nBack: {note.back}\nTags: {note.tags}\n"
+                f"Front: {proposed_note.front}\nBack: {proposed_note.back}\nTags: {proposed_note.tags}\n"
             )
 
-            prompt = "Is it correct? (Y/N/S/Q) - Y: Yes, N: No, S: Skip, Q: Quit: "
-            response = self._get_boolean_input(prompt)
+            msg = "Is it correct? (Y/N/S/Q) - Y: Yes, N: No, S: Skip, Q: Quit: "
+            response = self._process_response(msg)
 
             if response == "quit":
                 self.output_provider("Exiting review.")
@@ -68,12 +69,12 @@ class ReviewApp:
             self.output_provider("\n")
 
     # TODO: refactor to return either a bool or raise an exception
-    def _get_boolean_input(self, prompt) -> bool | Literal["quit"] | None:
+    def _process_response(self, prompt) -> bool | Literal["quit"] | None:
         while True:
             response = self.input_provider(prompt).strip().lower()
-            if response in ("y", "yes", "true", "1"):
+            if response == "y":
                 return True
-            elif response in ("n", "no", "false", "0"):
+            elif response == "n":
                 return False
             elif response == "s":
                 return None

@@ -2,7 +2,7 @@ import json
 from typing import Any, Protocol
 
 from openai import OpenAI
-from openai.types.chat.chat_completion import ChatCompletion, Choice
+from openai.types.chat.chat_completion import Choice
 from openai.types.chat.chat_completion_message import ChatCompletionMessage
 
 
@@ -19,16 +19,17 @@ class FakeCompletions:
             "tags": ["tag1", "tag2"],
         }
 
-        response = json.dumps(fake_note)
-
-        return ChatCompletion(
+        fake_response = json.dumps(fake_note)
+        return FakeChatCompletion(
             id="chat-123",
             created=12523424,
-            model="mymodel",
+            model=model,
             choices=[
                 Choice(
                     index=0,
-                    message=ChatCompletionMessage(role="assistant", content=response),
+                    message=ChatCompletionMessage(
+                        role="assistant", content=fake_response
+                    ),
                     finish_reason="stop",
                 )
             ],
@@ -36,15 +37,24 @@ class FakeCompletions:
         )
 
 
-def get_completion(nullable=False):
+class FakeChatCompletion:
+    def __init__(self, id, created, model, choices: list[Choice], object):
+        self.id = id
+        self.created = created
+        self.model_name = model
+        self.choices = choices
+        self.object = object
+
+
+def get_completion(nullable: bool = False):
     if nullable:
-        return None
+        return None  # TODO: implement
     else:
         client = get_vllm_client()
         return client.completions
 
 
-def get_chat_completion(nullable=False) -> ChatCompletionsService:
+def get_chat_completion(nullable: bool = False) -> ChatCompletionsService:
     if nullable:
         return FakeCompletions()
     else:

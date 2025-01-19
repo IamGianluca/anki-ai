@@ -1,5 +1,6 @@
 import pytest
 
+from anki_ai.adapters.chat_completion import get_chat_completion
 from anki_ai.entrypoints.review_note_changes import ReviewApp
 
 
@@ -18,7 +19,8 @@ class FakeInputProvider:
 def test_review_one_or_more_notes(deck, inputs, n_reviews):
     # Given
     fake_input = FakeInputProvider(inputs)
-    ra = ReviewApp(deck, deck, input_provider=fake_input)
+    fake_llm = get_chat_completion(nullable=True)
+    ra = ReviewApp(deck, llm=fake_llm, input_provider=fake_input)
     assert ra.n_reviewed() == 0
 
     # When
@@ -33,7 +35,8 @@ def test_save_reviewapp_state(tmp_path, deck):
     fpath = tmp_path / "out.txt"
     inputs = ["Y", "N"]
     fake_input = FakeInputProvider(inputs)
-    ra = ReviewApp(deck, deck, input_provider=fake_input)
+    fake_llm = get_chat_completion(nullable=True)
+    ra = ReviewApp(deck, llm=fake_llm, input_provider=fake_input)
     ra.review(n_reviews=2)
 
     # When
@@ -47,7 +50,8 @@ def test_load_reviewapp_state(tmp_path, deck):
     # Given
     fpath = tmp_path / "in.txt"
     fpath.write_text("first\tTrue\nsecond\tFalse\n")
-    ra = ReviewApp(deck, deck)
+    fake_llm = get_chat_completion(nullable=True)
+    ra = ReviewApp(deck, fake_llm)
 
     # Then
     assert ra.n_reviewed() == 0
@@ -64,7 +68,8 @@ def test_reviewapp_collision(tmp_path, deck):
     fpath = tmp_path / "out.txt"
     inputs = ["Y", "N"]
     fake_input = FakeInputProvider(inputs)
-    ra = ReviewApp(deck, deck, input_provider=fake_input)
+    fake_llm = get_chat_completion(nullable=True)
+    ra = ReviewApp(deck, llm=fake_llm, input_provider=fake_input)
     ra.review(n_reviews=2)
 
     assert ra.n_reviewed() == 2
@@ -80,7 +85,8 @@ def test_reviewapp_collision(tmp_path, deck):
     # Given
     fpath = tmp_path / "in.txt"
     fpath.write_text("first\tTrue\nsecond\tFalse\n")
-    ra = ReviewApp(deck, deck)
+    fake_llm = get_chat_completion(nullable=True)
+    ra = ReviewApp(deck, llm=fake_llm)
 
     # Then
     assert ra.n_reviewed() == 0

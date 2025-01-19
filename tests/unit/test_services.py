@@ -5,10 +5,10 @@ from anki_ai.service_layer.services import format_note
 
 def test_format_note(note1):
     # Given
-    chat = get_chat_completion(nullable=True)
+    llm = get_chat_completion(nullable=True)
 
     # When
-    result = format_note(note1, chat)
+    result = format_note(note1, llm)
 
     # Then
     assert isinstance(result, Note)
@@ -16,10 +16,10 @@ def test_format_note(note1):
 
 def test_format_note_does_not_overwrite_original_object(note1):
     # Given
-    chat = get_chat_completion(nullable=True)
+    llm = get_chat_completion(nullable=True)
 
     # When
-    result = format_note(note1, chat)
+    result = format_note(note1, llm)
 
     # Then
     assert result.guid == note1.guid
