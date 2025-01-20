@@ -104,7 +104,6 @@ class ReviewApp:
                     continue
             self.__output_provider("\n")
 
-    # TODO: refactor to return either a bool or raise an exception
     def save(self, fpath: Path) -> None:
         with open(fpath, "w") as f:
             for guid, score in self.__reviews.items():

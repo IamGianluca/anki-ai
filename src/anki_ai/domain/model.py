@@ -116,7 +116,7 @@ class Deck:
         attrs["front"] = front
         attrs["back"] = back
 
-        # convert tags as a list of str
+        # Convert tags as a list of str
         tags = tags.replace("\n", "")
         tags = list(tags.split(" "))
         attrs["tags"] = tags
