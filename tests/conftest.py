@@ -30,12 +30,12 @@ def note3() -> Note:
 
 @pytest.fixture
 def empty_deck():
-    return Deck("empty")
+    return Deck()
 
 
 @pytest.fixture
 def deck(note1, note2) -> Deck:
-    deck = Deck("test")
+    deck = Deck()
     deck.add([note1, note2])
     return deck
 

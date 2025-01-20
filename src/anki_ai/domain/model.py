@@ -23,8 +23,7 @@ class NoteChanges(BaseModel):
 
 
 class Deck:
-    def __init__(self, name: str = "default") -> None:
-        self.name: str = name
+    def __init__(self) -> None:
         self.__collection: List = []
         self.__sep: str = ""
         self.__html: bool = True

@@ -199,7 +199,7 @@ def test_deck_read_txt_log_warnings(caplog, tmp_path, deck):
 
 def test_deck_write_txt(test_file, tmp_path):
     # Given
-    deck = Deck("Default")
+    deck = Deck()
     deck.read_txt(test_file)
 
     # When
