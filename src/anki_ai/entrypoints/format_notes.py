@@ -61,10 +61,10 @@ class ReviewApp:
                 f"{proposed_note.tags} {proposed_note.front}\n{proposed_note.back}\n"
             )
 
-            msg = "Accept AI suggestions? (Y/N/E/Q) - Y: Yes, N: No, E: Edit, Q: Quit: "
-            # response = self._process_response(msg)
-            response = self.input_provider(msg).strip().lower()
             while True:
+                msg = "Accept AI suggestions? (Y/N/E/Q) - Y: Yes, N: No, E: Edit, Q: Quit: "
+                response = self.input_provider(msg).strip().lower()
+
                 if response == "y":
                     self.__reviews[note.guid] = True  # TODO: save new note
                     break
@@ -73,22 +73,29 @@ class ReviewApp:
                     self.__reviews[note.guid] = False
                     break
                 elif response == "e":
-                    reviewed_note = prompt(
-                        "",
-                        default=f"{proposed_note.tags} {unescape(proposed_note.front)}\n{unescape(proposed_note.back)}",
-                    )
-                    new_note = deepcopy(note)
-                    match = re.search(r"\[(.*?)\] (.*)\n(.*)", reviewed_note)
-                    if match:
-                        tags, front, back = match.groups()
-                        new_note.front = front
-                        new_note.back = back
-                        new_note.tags = [e.replace("'", "") for e in tags.split(",")]
-                        self.__reviews[note.guid] = False
-                        break
-                    else:
-                        logger.warning("Could not parse edited note.")
-                        break
+                    try:
+                        reviewed_note = prompt(
+                            "",
+                            default=f"{proposed_note.tags} {unescape(proposed_note.front)}\n{unescape(proposed_note.back)}",
+                            handle_sigint=True,  # Raise KeyboardInterrupt when user presses Ctrl+C
+                        )
+                        new_note = deepcopy(note)
+                        match = re.search(r"\[(.*?)\] (.*)\n(.*)", reviewed_note)
+                        if match:
+                            tags, front, back = match.groups()
+                            new_note.front = front
+                            new_note.back = back
+                            new_note.tags = [
+                                e.replace("'", "") for e in tags.split(",")
+                            ]
+                            self.__reviews[note.guid] = False
+                            break
+                        else:
+                            logger.warning("Could not parse edited note.")
+                            break
+                    except KeyboardInterrupt:
+                        self.output_provider("Editing cancelled.")
+                        continue  # When user presses Ctrl+C, return to A/S/E/Q screen
                 elif response == "q":
                     self.output_provider("Exiting review.")
                     # NOTE: we need to handle this outside of the while loop. If the use wants to quit
@@ -96,7 +103,7 @@ class ReviewApp:
                     # The while loop is needed to
                     return
                 else:
-                    print("Invalid input. Please enter A (Accept), S (Skip), E (Edit).")
+                    print(f"{response} is not a valid input.")
                     continue
             self.output_provider("\n")
 
