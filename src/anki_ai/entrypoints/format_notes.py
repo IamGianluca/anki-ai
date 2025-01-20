@@ -38,8 +38,8 @@ class ReviewApp:
     ):
         self.__deck = deck
         self.__llm = llm
-        self.input_provider = input_provider
-        self.output_provider = output_provider
+        self.__input_provider = input_provider
+        self.__output_provider = output_provider
         self.__reviews: dict = {}
 
     def n_reviewed(self) -> int:
@@ -49,27 +49,27 @@ class ReviewApp:
         self.__reviews = {}
 
         for i, note in enumerate(self.__deck[:n_reviews]):
-            self.output_provider(f"\nCard {i + 1} of {n_reviews}")
+            self.__output_provider(f"\nCard {i + 1} of {n_reviews}")
 
             orig = self.__deck.get(note.guid)[0]
-            self.output_provider(
+            self.__output_provider(
                 f"{orig.tags} {unescape(orig.front)}\n{unescape(orig.back)}\n"
             )
 
             proposed_note = format_note(note, self.__llm)
-            self.output_provider(
+            self.__output_provider(
                 f"{proposed_note.tags} {proposed_note.front}\n{proposed_note.back}\n"
             )
 
             while True:
                 msg = "Accept AI suggestions? (Y/N/E/Q) - Y: Yes, N: No, E: Edit, Q: Quit: "
-                response = self.input_provider(msg).strip().lower()
+                response = self.__input_provider(msg).strip().lower()
 
                 if response == "y":
                     self.__reviews[note.guid] = True  # TODO: save new note
                     break
                 elif response == "n":
-                    self.output_provider("Skipping this card.")
+                    self.__output_provider("Skipping this card.")
                     self.__reviews[note.guid] = False
                     break
                 elif response == "e":
@@ -94,25 +94,22 @@ class ReviewApp:
                             logger.warning("Could not parse edited note.")
                             break
                     except KeyboardInterrupt:
-                        self.output_provider("Editing cancelled.")
-                        continue  # When user presses Ctrl+C, return to A/S/E/Q screen
+                        self.__output_provider("Editing cancelled.")
+                        continue  # When user presses Ctrl+C, return to Y/N/E/Q screen
                 elif response == "q":
-                    self.output_provider("Exiting review.")
-                    # NOTE: we need to handle this outside of the while loop. If the use wants to quit
-                    # the app, we need to quit and save.
-                    # The while loop is needed to
+                    self.__output_provider("Exiting review.")
                     return
                 else:
                     print(f"{response} is not a valid input.")
                     continue
-            self.output_provider("\n")
+            self.__output_provider("\n")
 
     # TODO: refactor to return either a bool or raise an exception
     def save(self, fpath: Path) -> None:
         with open(fpath, "w") as f:
             for guid, score in self.__reviews.items():
                 f.write(f"{guid}\t{score}\n")
-        self.output_provider(f"Progress saved in file `{fpath}`.")
+        self.__output_provider(f"Progress saved in file `{fpath}`.")
 
     def load(self, fpath: Path) -> None:
         with open(fpath, "r") as f:
