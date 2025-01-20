@@ -17,7 +17,7 @@ def format_notes(deck_fpath: Path, out_fpath: Path):
     """Use a LLM to improve existing Anki notes, and allow user to either
     accept the suggested changes, decline them, or make further manual changes.
     """
-    deck = Deck("original")
+    deck = Deck()
     deck.read_txt(Path(deck_fpath))
     deck.shuffle()
 
