@@ -1,5 +1,5 @@
 #separator:tab
-#html:false
+#html:true
 #guid column:1
 #notetype column:2
 #deck column:3

@@ -1,3 +1,5 @@
+from typing import List
+
 import pytest
 from loguru import logger
 
@@ -5,27 +7,56 @@ from anki_ai.domain.model import Deck, Note
 
 
 @pytest.fixture
-def test_file(tmp_path):
-    file = tmp_path / "test_file.txt"
-    file.write_text(
-        "#separator:tab\n#html:true\n#guid column:1\n#notetype column:2\n#deck column:3\n#tags column:6\nMm+g*FhiWM\tKaTeX and Markdown Basic\tDefault\tWhat is the command to list the content of a directory?\t```bash $ ls <path> ```\t\t\t\tlinux\n"
-    )
-    return file
-
-
-@pytest.fixture
 def note1() -> Note:
-    return Note(guid="first", front="Front 1", back="Back 1", tags=["Tag 1"])
+    return Note(
+        guid="first",
+        front="Front 1",
+        back="Back 1",
+        tags=["Tag 1"],
+        notetype="KaTeX and Markdown Basic (Color)",
+        deck_name="Default",
+    )
 
 
 @pytest.fixture
 def note2() -> Note:
-    return Note(guid="second", front="Front 2", back="Back 2", tags=["Tag 2"])
+    return Note(
+        guid="second",
+        front="Front 2",
+        back="Back 2",
+        tags=["Tag 2"],
+        notetype="KaTeX and Markdown Basic (Color)",
+        deck_name="Default",
+    )
 
 
 @pytest.fixture
 def note3() -> Note:
-    return Note(guid="third", front="Front 3", back="Back 3", tags=["Tag 3"])
+    return Note(
+        guid="third",
+        front="Front 3",
+        back="Back 3",
+        tags=["Tag 3"],
+        notetype="KaTeX and Markdown Basic (Color)",
+        deck_name="Default",
+    )
+
+    # def to_file_str(self) -> str:
+    #     return f"{self.guid}\t{self.notetype}\t{self.deck_name}\t{self.front}\t{self.back}\t\t\t\t{self.tags}\n"
+
+
+def create_fake_file_str(notes: List[Note]) -> str:
+    header_str = "#separator:tab\n#html:true\n#guid column:1\n#notetype column:2\n#deck column:3\n#tags column:9\n"
+    notes_str = "\n".join([n.to_file_str() for n in notes])
+    return header_str + notes_str
+
+
+@pytest.fixture
+def test_file(tmp_path, note1):
+    file = tmp_path / "test_file.txt"
+    file_content = create_fake_file_str(notes=[note1])
+    file.write_text(file_content)
+    return file
 
 
 @pytest.fixture

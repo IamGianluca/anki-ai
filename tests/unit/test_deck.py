@@ -140,15 +140,12 @@ def test_read_txt_with_html_false(empty_deck, tmp_path):
         "#separator:tab\n#html:false\n#guid column:1\n#notetype column:2\n#deck column:3\n#tags column:6\nMm+g*FhiWM\tKaTeX and Markdown Basic\tDefault\tfront\tback\t\t\t\ttag1 tag2\n"
     )
 
-    # When
-    empty_deck.read_txt(html_file)
-
-    # Then
-    assert len(empty_deck) == 1
-    note = empty_deck[0]
-    assert note.front == "front"
-    assert note.back == "back"
-    assert note.tags == ["tag1", "tag2"]
+    # When and Then
+    with pytest.raises(
+        ValueError,
+        match="Export file must include HTML tags. See documentation for more help.",
+    ):
+        empty_deck.read_txt(html_file)
 
 
 def test_deck_read_txt_more_fields(deck):
@@ -176,7 +173,7 @@ def test_deck_read_txt_more_fields(deck):
 def test_deck_read_txt_log_warnings(caplog, tmp_path, deck):
     # Given
     invalid_file = tmp_path / "invalid_file.txt"  # Missing two tabs before tags
-    invalid_file.write_text("#separator:tab\n#html:false\nfront\tback\t\ttag1 tag2\n")
+    invalid_file.write_text("#separator:tab\n#html:true\nfront\tback\t\ttag1 tag2\n")
 
     # When
     deck.read_txt(invalid_file)

@@ -15,6 +15,9 @@ class Note(BaseModel):
     notetype: Optional[str] = None
     deck_name: Optional[str] = None
 
+    def to_file_str(self) -> str:
+        return f"{self.guid}\t{self.notetype}\t{self.deck_name}\t{self.front}\t{self.back}\t\t\t\t{self.tags}\n"
+
 
 class NoteChanges(BaseModel):
     front: str
@@ -92,7 +95,9 @@ class Deck:
         if html == "true":
             self.__html = True
         else:
-            self.__html = False
+            raise ValueError(
+                "Export file must include HTML tags. See documentation for more help."
+            )
 
     def _extract_ncols(self, line: str) -> None:
         col_type, n_cols = line.split(":")
