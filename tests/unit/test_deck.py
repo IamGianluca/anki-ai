@@ -142,8 +142,8 @@ def test_read_txt_with_html_false(empty_deck, tmp_path):
 
     # When and Then
     with pytest.raises(
-        ValueError,
-        match="Export file must include HTML tags. See documentation for more help.",
+        NotImplementedError,
+        match="Only files including HTML tags are supported. See documentation for more help.",
     ):
         empty_deck.read_txt(html_file)
 
@@ -162,12 +162,14 @@ def test_deck_read_txt_more_fields(deck):
     result = deck[4]
 
     # Then
-    assert result.guid == "Azd65{j+,q"
-    assert result.notetype == "KaTeX and Markdown Basic"
+    assert result.guid == "G1Z_~#;mLc"
+    assert result.notetype == "KaTeX and Markdown Basic (Color)"
     assert result.deck_name == "Default"
-    assert result.front == "Command to create a soft link"
-    assert result.back == "```bash $ ln -s <file_name> <link_name> ```"
-    assert result.tags == ["linux"]
+    assert (
+        result.front == '<img src="paste-d9689dc830d3f333e81b9b7058d5b25517064954.jpg">'
+    )
+    assert result.back == "Jug"
+    assert result.tags == ["english"]
 
 
 def test_deck_read_txt_log_warnings(caplog, tmp_path, deck):

@@ -3,12 +3,12 @@
 #guid column:1
 #notetype column:2
 #deck column:3
-#tags column:6
-IjfKk}wnb@	KaTeX and Markdown Basic	Default		Towel				english
-"G1Z_~#;mLc"	KaTeX and Markdown Basic	Default		Jug				english
-Azd65{j+,q	KaTeX and Markdown Basic	Default	Command to create a soft link	```bash $ ln -s <file_name> <link_name> ```				linux
-BGL!8$wV<W	KaTeX and Markdown Basic	Default	In the `ln -s` command, what is the order of file name and link name?	```bash $ ln -s <file_name> <link_name> ```				linux
-be:y>MF$Ae	KaTeX and Markdown Basic	Default	In the `zip` command, what is the option to specify the destination?	```bash $ unzip <file> -d <path> ```				linux
-Ab&$&th[l3	KaTeX and Markdown Basic	Default	What command does extract files from a zip archive?	```bash $ unzip <file> ```				linux
-Mm+g*FhiWM	KaTeX and Markdown Basic	Default	What is the command to list the content of a directory?	```bash $ ls <path> ```				linux
-hbX3.9`gV4	KaTeX and Markdown Basic	Default	What is the command to print text to the terminal window?	```bash $ echo ... ```				linux
+#tags column:9
+D?H@y-%%r	KaTeX and Markdown Basic (Color)	Default	"<img src=""paste-d0ff77498ff8dde85ba00ae8b7c4bb6032d8483d.jpg"">"	Headboard				english
+IjfKk}wnb@	KaTeX and Markdown Basic (Color)	Default	"<img src=""paste-334a3566ffa4cab66033c10810e8d06af8fda194.jpg"">"	Towel				english
+"G1Z_~#;mLc"	KaTeX and Markdown Basic (Color)	Default	"<img src=""paste-d9689dc830d3f333e81b9b7058d5b25517064954.jpg"">"	Jug				english
+Azd65{j+,q	KaTeX and Markdown Basic (Color)	Default	Command to create a soft link	```bash<br>$ ln -s &lt;file&gt; &lt;link&gt;<br>```				linux
+BGL!8$wV<W	KaTeX and Markdown Basic (Color)	Default	In the `ln -s` command, what is the order of file name and link name?	```bash<br>$ ln -s &lt;file_name&gt; &lt;link_name&gt;<br>```				linux
+be:y>MF$Ae	KaTeX and Markdown Basic (Color)	Default	In the `zip` command, what is the option to specify the destination?	"```bash<br>$ unzip &lt;file&gt; -d &lt;path&gt;<br>```<br><br><img src=""paste-92e15adfe1d216e9ba6f170e4033b292b7b15756.jpg"">"				linux
+Ab&$&th[l3	KaTeX and Markdown Basic (Color)	Default	What command extracts files from a zip archive?	```bash<br>$ unzip &lt;file&gt;<br>```				linux
+Mm+g*FhiWM	KaTeX and Markdown Basic (Color)	Default	What is the command to list the content of a directory?	```bash<br>$ ls &lt;path&gt;<br>```				linux

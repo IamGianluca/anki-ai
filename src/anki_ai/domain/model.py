@@ -1,5 +1,7 @@
+import csv
 import random
 from collections.abc import Generator
+from io import StringIO
 from pathlib import Path
 from typing import Any, List, Optional
 
@@ -64,7 +66,7 @@ class Deck:
                     self._parse_header(line)
                 else:
                     try:
-                        attrs = self._process_line(line)
+                        attrs = self._process_row(line)
                         if bool(set(attrs["tags"]) & set(exclude_tags)):
                             continue
                         self.__collection.append(Note(**attrs))
@@ -95,8 +97,8 @@ class Deck:
         if html == "true":
             self.__html = True
         else:
-            raise ValueError(
-                "Export file must include HTML tags. See documentation for more help."
+            raise NotImplementedError(
+                "Only files including HTML tags are supported. See documentation for more help."
             )
 
     def _extract_ncols(self, line: str) -> None:
@@ -110,22 +112,20 @@ class Deck:
         elif "tags" in col_type:
             self.__tags_ncol = int(n_cols)
 
-    def _process_line(self, line: str) -> dict[str, Any]:
+    def _process_row(self, row: str) -> dict[str, Any]:
         attrs = dict()
-        if self.__deck_ncol > 0:
-            guid, notetype, deck_name = line.split(self.__sep)[: self.__deck_ncol]
-            attrs["guid"] = guid
-            attrs["notetype"] = notetype
-            attrs["deck_name"] = deck_name
-        front, back, _, _, _, tags = line.split(self.__sep)[self.__deck_ncol :]
-        attrs["front"] = front
-        attrs["back"] = back
-
-        # Convert tags as a list of str
-        tags = tags.replace("\n", "")
-        tags = list(tags.split(" "))
-        attrs["tags"] = tags
-        return attrs
+        with StringIO(row) as f:
+            data = list(csv.reader(f, delimiter="\t", quotechar='"'))[0]
+            if self.__deck_ncol > 0:
+                guid, notetype, deck_name = data[: self.__deck_ncol]
+                attrs["guid"] = guid
+                attrs["notetype"] = notetype
+                attrs["deck_name"] = deck_name
+            front, back, _, _, _, tags = data[self.__deck_ncol :]
+            attrs["front"] = front
+            attrs["back"] = back
+            attrs["tags"] = tags.split(" ")
+            return attrs
 
     def write_txt(self, fpath) -> None:
         with open(fpath, "w") as f:
