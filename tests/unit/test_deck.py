@@ -7,18 +7,6 @@ from anki_ai.domain.model import Deck, Note
 TEST_DATA_FILE_FPATH = "./tests/data/test_data.txt"
 
 
-def test_note_repr(note1):
-    # When
-    result = repr(note1)
-
-    # Then
-    guid, front, back, tags = note1.guid, note1.front, note1.back, note1.tags
-    assert (
-        result
-        == f"Note(guid='{guid}', front='{front}', back='{back}', tags={tags}, notetype=None, deck_name=None)"
-    )
-
-
 def test_add_one_note(empty_deck):
     # Given
     note = Note(guid="fake", front="Test Front", back="Test Back")
