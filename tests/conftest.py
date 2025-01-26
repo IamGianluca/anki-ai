@@ -12,7 +12,7 @@ def note1() -> Note:
         guid="first",
         front="Front 1",
         back="Back 1",
-        tags=["Tag 1"],
+        tags=["Tag1"],
         notetype="KaTeX and Markdown Basic (Color)",
         deck_name="Default",
     )
@@ -24,7 +24,7 @@ def note2() -> Note:
         guid="second",
         front="Front 2",
         back="Back 2",
-        tags=["Tag 2"],
+        tags=["Tag2"],
         notetype="KaTeX and Markdown Basic (Color)",
         deck_name="Default",
     )
@@ -36,13 +36,10 @@ def note3() -> Note:
         guid="third",
         front="Front 3",
         back="Back 3",
-        tags=["Tag 3"],
+        tags=["Tag3"],
         notetype="KaTeX and Markdown Basic (Color)",
         deck_name="Default",
     )
-
-    # def to_file_str(self) -> str:
-    #     return f"{self.guid}\t{self.notetype}\t{self.deck_name}\t{self.front}\t{self.back}\t\t\t\t{self.tags}\n"
 
 
 def create_fake_file_str(notes: List[Note]) -> str:

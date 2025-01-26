@@ -18,7 +18,8 @@ class Note(BaseModel):
     deck_name: Optional[str] = None
 
     def to_file_str(self) -> str:
-        return f"{self.guid}\t{self.notetype}\t{self.deck_name}\t{self.front}\t{self.back}\t\t\t\t{self.tags}\n"
+        tags_str = "" if not self.tags else " ".join(self.tags)
+        return f"{self.guid}\t{self.notetype}\t{self.deck_name}\t{self.front}\t{self.back}\t\t\t\t{tags_str}\n"
 
 
 class NoteChanges(BaseModel):
@@ -128,36 +129,41 @@ class Deck:
             return attrs
 
     def write_txt(self, fpath) -> None:
-        with open(fpath, "w") as f:
-            self._write_header(f)
+        with open(fpath, "w", newline="") as f:
+            writer = csv.writer(f, delimiter="\t", quotechar='"', lineterminator="\n")
+            self._write_header(writer)
             for note in self:
-                self._write_note(f, note)
+                self._write_note(writer, note)
 
     def _write_header(self, f) -> None:
-        f.write(f"#separator:{symbol2sep[self.__sep]}\n")
-        f.write(f"#html:{symbol2html[self.__html]}\n")
+        f.writerow([f"#separator:{symbol2sep[self.__sep]}"])
+        f.writerow([f"#html:{symbol2html[self.__html]}"])
         if self.__guid_ncol:
-            f.write(f"#guid column:{self.__guid_ncol}\n")
+            f.writerow([f"#guid column:{self.__guid_ncol}"])
         if self.__notetype_ncol:
-            f.write(f"#notetype column:{self.__notetype_ncol}\n")
+            f.writerow([f"#notetype column:{self.__notetype_ncol}"])
         if self.__deck_ncol:
-            f.write(f"#deck column:{self.__deck_ncol}\n")
+            f.writerow([f"#deck column:{self.__deck_ncol}"])
         if self.__tags_ncol:
-            f.write(f"#tags column:{self.__tags_ncol}\n")
+            f.writerow([f"#tags column:{self.__tags_ncol}"])
 
     def _write_note(self, f, note) -> None:
-        out = ""
+        out = []
         if self.__guid_ncol:
-            out += f"{note.guid}\t"
+            out.append(note.guid)
         if self.__notetype_ncol:
-            out += f"{note.notetype}\t"
+            out.append(note.notetype)
         if self.__deck_ncol:
-            out += f"{note.deck_name}\t"
-        out += f"{note.front}\t{note.back}\t\t\t\t"
+            out.append(note.deck_name)
+        out.append(note.front)
+        out.append(note.back)
+        out.append("")
+        out.append("")
+        out.append("")
         if self.__tags_ncol:
-            tags = " ".join(note.tags)
-            out += f"{tags}"
-        f.write(f"{out}\n")
+            tags_str = "" if not note.tags else " ".join(note.tags)
+            out.append(tags_str)
+        f.writerow(out)
 
     def shuffle(self, seed: int = 42) -> None:
         random.seed(seed)
