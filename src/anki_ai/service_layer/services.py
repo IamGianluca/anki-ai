@@ -1,6 +1,5 @@
+import html
 from copy import deepcopy
-from html.parser import HTMLParser
-from io import StringIO
 from pathlib import Path
 from typing import cast
 
@@ -34,9 +33,7 @@ def format_deck(in_path: Path, out_path: Path) -> None:
 
 
 def format_note(note: Note, chat: ChatCompletionsService) -> Note:
-    user_msg = (
-        f"""Front: {strip_html_tags(note.front)}\nBack: {strip_html_tags(note.back)}"""
-    )
+    user_msg = f"""Front: {remove_html_tags(note.front)}\nBack: {remove_html_tags(note.back)}"""
 
     messages = [
         {"role": "system", "content": SYSTEM_MSG},
@@ -63,31 +60,12 @@ def format_note(note: Note, chat: ChatCompletionsService) -> Note:
     return new_note
 
 
-def strip_html_tags(html):
-    s = HTMLStripper()
-    s.feed(replace_br_with_newline(html))
-    return s.get_data()
+def add_html_tags(s: str) -> str:
+    return html.escape(s).replace("\n", "<br>")
 
 
-class HTMLStripper(HTMLParser):
-    def __init__(self):
-        super().__init__()
-        self.reset()
-        self.strict = False
-        self.convert_charrefs = True
-        self.text = StringIO()
-
-    def handle_data(self, data):
-        self.text.write(data)
-
-    def get_data(self):
-        return self.text.getvalue()
-
-
-def replace_br_with_newline(html_string):
-    import re
-
-    return re.sub(r"<br\s*/?>", "\n", html_string)
+def remove_html_tags(s: str) -> str:
+    return html.unescape(s).replace("<br>", "\n")
 
 
 SYSTEM_MSG = r"""Optimize this Anki note:
