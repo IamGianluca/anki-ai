@@ -8,9 +8,12 @@ import fire
 from loguru import logger
 from prompt_toolkit import prompt
 
-from anki_ai.adapters.chat_completion import ChatCompletionsService
+from anki_ai.adapters.chat_completion import (
+    ChatCompletionsServiceProtocol,
+    get_completion,
+)
 from anki_ai.domain.deck import Deck
-from anki_ai.service_layer.services import format_note, get_chat_completion
+from anki_ai.service_layer.services import format_note_workflow
 
 
 def format_notes(deck_fpath: Path, out_fpath: Path):
@@ -21,7 +24,7 @@ def format_notes(deck_fpath: Path, out_fpath: Path):
     deck.read_txt(Path(deck_fpath))
     deck.shuffle()
 
-    llm = get_chat_completion()
+    llm = get_completion()
 
     ra = ReviewApp(deck=deck, llm=llm)
     ra.review()
@@ -32,7 +35,7 @@ class ReviewApp:
     def __init__(
         self,
         deck: Deck,
-        llm: ChatCompletionsService,
+        llm: ChatCompletionsServiceProtocol,
         input_provider: Callable[[str], str] = input,
         output_provider: Callable[[str], None] = print,
     ):
@@ -56,7 +59,7 @@ class ReviewApp:
                 f"{orig.tags} {unescape(orig.front)}\n{unescape(orig.back)}\n"
             )
 
-            proposed_note = format_note(note, self.__llm)
+            proposed_note = format_note_workflow(note, self.__llm)
             self.__output_provider(
                 f"{proposed_note.tags} {proposed_note.front}\n{proposed_note.back}\n"
             )
