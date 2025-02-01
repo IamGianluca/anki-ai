@@ -9,7 +9,8 @@ from openai import APIConnectionError
 from tqdm import tqdm
 
 from anki_ai.adapters.chat_completion import ChatCompletionsService, get_chat_completion
-from anki_ai.domain.model import Deck, Note, NoteChanges
+from anki_ai.domain.deck import Deck
+from anki_ai.domain.note import Note, NoteChanges
 
 
 def format_deck(in_path: Path, out_path: Path) -> None:

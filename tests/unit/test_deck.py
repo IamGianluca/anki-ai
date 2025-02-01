@@ -2,7 +2,8 @@ import filecmp
 
 import pytest
 
-from anki_ai.domain.model import Deck, Note
+from anki_ai.domain.deck import Deck
+from anki_ai.domain.note import Note
 
 TEST_DATA_FILE_FPATH = "./tests/data/test_data.txt"
 

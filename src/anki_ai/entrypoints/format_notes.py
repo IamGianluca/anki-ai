@@ -9,7 +9,7 @@ from loguru import logger
 from prompt_toolkit import prompt
 
 from anki_ai.adapters.chat_completion import ChatCompletionsService
-from anki_ai.domain.model import Deck
+from anki_ai.domain.deck import Deck
 from anki_ai.service_layer.services import format_note, get_chat_completion
 
 

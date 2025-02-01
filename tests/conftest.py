@@ -3,7 +3,8 @@ from typing import List
 import pytest
 from loguru import logger
 
-from anki_ai.domain.model import Deck, Note
+from anki_ai.domain.deck import Deck
+from anki_ai.domain.note import Note
 
 
 @pytest.fixture

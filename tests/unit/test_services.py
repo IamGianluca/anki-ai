@@ -1,5 +1,5 @@
 from anki_ai.adapters.chat_completion import get_chat_completion
-from anki_ai.domain.model import Note
+from anki_ai.domain.note import Note
 from anki_ai.service_layer.services import format_note
 
 
